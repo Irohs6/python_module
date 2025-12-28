@@ -16,7 +16,7 @@ class Plant:
 
 if __name__ == "__main__":
     # Centralisation des valeurs initiales
-    plant_data = [
+    plants_data = [
         ("rose", 25, 30),
         ("sunflower", 80, 45),
         ("cactus", 15, 120),
@@ -24,16 +24,12 @@ if __name__ == "__main__":
         ("bamboo", 150, 200)
         ]
     # Création automatique des plantes
-    plants = {
-        name: Plant(name, height, age) for name, height, age in plant_data
-        }
-    print("=== Day 1 ===")
-    for plant in plants.values():
+    plants = []
+    for name, height, age in plants_data:
+        plant = Plant(name, height, age)
+        plants.append(plant)
+    print("=== Plant Factory Output ===")
+    for plant in plants:
+        print("Created:", end=" ")
         plant.get_info()
-    # Faire pousser pendant 6 jours 
-    for _ in range(6):
-        for plant in plants.values():
-            plant.grow()
-    print("=== Day 7 ===")
-    for plant in plants.values():
-        plant.get_info()
+    print(f"Total plants created: {len(plants)}")
