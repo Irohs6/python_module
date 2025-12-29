@@ -37,7 +37,6 @@ class SecurePlant:
 
 
 if __name__ == "__main__":
-    # Centralisation des valeurs initiales
     plants_data = [
         ("rose", 25, 30),
         ("sunflower", 80, 45),
@@ -45,7 +44,6 @@ if __name__ == "__main__":
         ("orchid", 18, 60),
         ("bamboo", 150, 200)
         ]
-    # Création automatique des plantes
     plants = []
     for name, height, age in plants_data:
         plant = SecurePlant(name, height, age)
