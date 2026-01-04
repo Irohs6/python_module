@@ -7,7 +7,7 @@ class Plant:
         self.age = age
 
     def get_info(self):
-        print(f"{self.name}: {self.height}cm {self.age} days old")
+        return (f"{self.name}: {self.height}cm {self.age} days old")
 
 
 class Flower(Plant):
@@ -20,30 +20,26 @@ class Flower(Plant):
 
     def get_info(self):
         return (
-            f"{self.name} (FLower):"
-            f"{self.height}cm,"
-            f"{self.age} days,"
+            f"{self.name} (Flower): "
+            f"{self.height}cm, "
+            f"{self.age} days, "
             f"{self.color} color"
         )
 
 
 class Tree(Plant):
     def __init__(self, name: str, height: int, age: int, trunk_diameter: int):
-        self.diam = trunk_diameter
         super().__init__(name, height, age)
+        self.diam = trunk_diameter
 
     def produce_shade(self):
         print(f"{self.name} provides {self.diam * 2} square meters of shade")
 
     def get_info(self):
-        if self.height > 100:
-            height_str = f"{self.height / 100}m,"
-        else:
-            height_str = f"{self.height}cm,"
         return (
-            f"{self.name} (Tree):"
-            f"{height_str}"
-            f"{self.age} days,"
+            f"{self.name} (Tree): "
+            f"{self.height}cm, "
+            f"{self.age} days, "
             f"{self.diam} cm diameter"
             )
 
@@ -82,8 +78,8 @@ if __name__ == "__main__":
     oak = Tree("oak", 300, 100, 75)
     pine = Tree("pin", 400, 80, 50)
 
-    tomato = Vegetable("tomato", 15, 25, "Summer", "Vitamine C")
-    carrot = Vegetable("carrot", 10, 5, "SUmmer", "Vitamine A")
+    tomato = Vegetable("tomato", 15, 25, "Summer", "Vitamin C")
+    carrot = Vegetable("carrot", 10, 5, "Summer", "Vitamin A")
     print(" === Garden Plant Types === ")
     print(rose.get_info())
     rose.bloom()

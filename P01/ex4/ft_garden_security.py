@@ -22,14 +22,14 @@ class SecurePlant:
 
     def set_age(self, new_age):
         if new_age < 0:
-            print(f"Invalid operation attempted: age{new_age} [REJECTED]")
+            print(f"Invalid operation attempted: age {new_age} [REJECTED]")
             print("Security: Negative age rejected")
         else:
             self.age = new_age
             print(f"Age updated: {new_age} days [OK]")
 
     def get_info(self):
-        print(f"{self.name}: {self.height}cm {self.age} days old")
+        return (f"{self.name}: {self.height}cm {self.age} days old")
 
     def grow(self):
         self.height = self.height + 1

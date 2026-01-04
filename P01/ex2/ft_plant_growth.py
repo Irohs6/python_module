@@ -7,7 +7,7 @@ class Plant:
         self.age = age
 
     def get_info(self):
-        print(f"{self.name}: {self.height}cm {self.age} days old")
+        return (f"{self.name}: {self.height}cm {self.age} days old")
 
     def grow(self):
         self.height = self.height + 1
@@ -29,8 +29,8 @@ if __name__ == "__main__":
         }
     print("=== Day 1 ===")
     for plant in plants.values():
-        plant.get_info()
-    # Faire pousser pendant 6 jours 
+        print(plant.get_info())
+    # Faire pousser pendant 6 jours
     for _ in range(6):
         for plant in plants.values():
             plant.grow()

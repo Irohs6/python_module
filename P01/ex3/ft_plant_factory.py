@@ -7,7 +7,7 @@ class Plant:
         self.age = age
 
     def get_info(self):
-        print(f"{self.name}: {self.height}cm {self.age} days old")
+        return (f"{self.name}: {self.height}cm {self.age} days old")
 
     def grow(self):
         self.height = self.height + 1
@@ -30,6 +30,5 @@ if __name__ == "__main__":
         plants.append(plant)
     print("=== Plant Factory Output ===")
     for plant in plants:
-        print("Created:", end=" ")
-        plant.get_info()
+        print("Created:", plant.get_info())
     print(f"Total plants created: {len(plants)}")

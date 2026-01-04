@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 class Plant:
-    def __init__(self, name:str, height:int):
+    def __init__(self, name: str, height: int):
         self.name = name.capitalize()
         self.height = height
         self.grow_count = 0
@@ -16,28 +16,26 @@ class Plant:
 
 
 class FloweringPlant(Plant):
-    def __init__(self, name:str, height:int, color:str):
+    def __init__(self, name: str, height: int, color: str):
         super().__init__(name, height)
         self.color = color
         self.blooming = True
 
-    def bloom(self):
-        self.blooming = False
-
     def get_info(self):
-        state = "blooming" if self.blooming else "not blooming"
+        state = "blooming"
         base_info = super().get_info()
         return f"{base_info}, {self.color} flowers ({state})"
 
-class PrizePlant(FloweringPlant):
-    def __init__(self, name, height, color, score:int):
+
+class PrizeFlower(FloweringPlant):
+    def __init__(self, name, height, color, score: int):
         super().__init__(name, height, color)
         self.score = score
 
     def get_info(self):
         base_info = super().get_info()
         return f"{base_info}, Prize points: {self.score}"
-    
+
 
 class GardenManager:
     def __init__(self, owner: str, plants: list[Plant] = None):
@@ -54,14 +52,24 @@ class GardenManager:
         print(f"{self.owner} is helping all plants grow ...")
         for plant in self.plants:
             plant.grow()
-    
+
     def report(self):
+        added = len(self.plants)
+        growth = self.GardenStat.total_growth(self.plants)
         print(f"=== {self.owner}'s Garden Report ===")
-        print(f"PLants in garden")
+        print("Plants in garden")
         for plant in self.plants:
             print(f"{plant.get_info()}")
-        print(f"Plant added: {len.plants}, Total growth {self.GardenStat.total_growth} cm")
-        print(f"PLant types: {self.GardenStat.count_type}")
+        print(f"Plant added: {added}, Total growth: {growth}cm")
+        print(f"Plant types: {self.GardenStat.count_type(self.plants)}")
+
+    @staticmethod
+    def validate_height(value: int) -> bool:
+        return value >= 0
+
+    @classmethod
+    def create_garden_network(cls, owners: list[str]):
+        return [cls(owner) for owner in owners]
 
     class GardenStat():
 
@@ -71,31 +79,56 @@ class GardenManager:
             for plant in plants:
                 total_grow = total_grow + plant.grow_count
             return total_grow
-        
+
+        @staticmethod
         def count_type(plants):
             nb_plant = 0
             nb_flower_plant = 0
             nb_prize_plant = 0
             for plant in plants:
-                if isinstance(plant, PrizePlant):
+                if isinstance(plant, PrizeFlower):
                     nb_prize_plant += 1
                 elif isinstance(plant, FloweringPlant):
                     nb_flower_plant += 1
                 elif isinstance(plant, Plant):
                     nb_plant += 1
-            return (f"{nb_flower_plant}, {nb_prize_plant}, {nb_plant}")
-
-
-
+            return (
+                f"{nb_plant} regular, "
+                f"{nb_flower_plant} flowering, "
+                f"{nb_prize_plant} prize flowers"
+                )
 
 
 if __name__ == "__main__":
-    garden = GardenManager("Alice")
-    rose = FloweringPlant("rose", 20, "red")
-    sunflower = PrizePlant("sunflower", 50, "yellow", 10)
+    print("=== Garden Management System Demo ===")
 
-    print(garden.add_plant(rose))     
-    print(garden.add_plant(sunflower)) 
-    garden.report()
+    # Création d’un réseau de jardins
+    gardens = GardenManager.create_garden_network(["Alice", "Bob"])
+    alice = gardens[0]
+    bob = gardens[1]
 
+    # Plantes d’Alice
+    oak = Plant("oak tree", 100)
+    rose = FloweringPlant("rose", 25, "red")
+    sunflower = PrizeFlower("sunflower", 50, "yellow", 10)
+
+    print(alice.add_plant(oak))
+    print(alice.add_plant(rose))
+    print(alice.add_plant(sunflower))
+
+    # Croissance
+    alice.help_grow()
+
+    # Rapport Alice
+    alice.report()
+
+    # Test de validation statique
+    print("Height validation test:", GardenManager.validate_height(10))
+
+    # Score des jardins (exemple simple)
+    print("Garden scores")
+    print(f"- Alice: {alice.GardenStat.total_growth(alice.plants) * 10}")
+    print(f"- Bob: {bob.GardenStat.total_growth(bob.plants) * 10}")
+
+    print(f"Total gardens managed: {len(gardens)}")
 
