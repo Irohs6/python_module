@@ -1,8 +1,23 @@
 #!/usr/bin/env python3
 
+class GardenError(Exception):
+    """Erreur générale liée au jardin."""
+    pass
+
+
+class PlantError(GardenError):
+    """Erreur liée à une plante."""
+    pass
+
+
+class WaterError(GardenError):
+    """Erreur liée à l'arrosage."""
+    pass
+
+
 class Plant:
     def __init__(self, name: str, height: int):
-        self.name = name.capitalize()
+        self.name = name
         self.height = height
         self.grow_count = 0
 
@@ -39,12 +54,14 @@ class PrizeFlower(FloweringPlant):
 
 class GardenManager:
     def __init__(self, owner: str, plants: list[Plant] = None):
-        self.owner = owner.capitalize()
+        self.owner = owner
         if plants is None:
             plants = []
         self.plants = plants
 
     def add_plant(self, plant: Plant):
+        if not plant.name:
+            raise PlantError("Error adding plant: Plant name cannot be empty!")
         self.plants.append(plant)
         return f"Added {plant.name} to {self.owner}'s garden"
 
@@ -108,7 +125,7 @@ if __name__ == "__main__":
     bob = gardens[1]
 
     # Plantes d’Alice
-    oak = Plant("oak tree", 100)
+    oak = Plant(None, 100)
     rose = FloweringPlant("rose", 25, "red")
     sunflower = PrizeFlower("sunflower", 50, "yellow", 10)
 

@@ -32,3 +32,4 @@ if __name__ == "__main__":
     for plant in plants:
         print("Created:", plant.get_info())
     print(f"Total plants created: {len(plants)}")
+    print(plants)
