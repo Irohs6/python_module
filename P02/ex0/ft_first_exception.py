@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 
 def check_temperature(temp_str):
+    """Check if a temperature is appropriate for plants.
+
+    Args:
+        temp_str: String representing a temperature value
+
+    Returns:
+        None: Prints the verification result
+    """
     try:
         temp = int(temp_str)
     except ValueError:

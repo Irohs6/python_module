@@ -13,7 +13,7 @@ def process_command_line():
     print(f"Program name: {program_name}")
     if arguments:
         print(f"Arguments received: {len(arguments)}")
-        for i, arg in enumerate(arguments, 1): 
+        for i, arg in enumerate(arguments, 1):
             print(f"Argument {i}: {arg}")
     else:
         print("No arguments provided!")

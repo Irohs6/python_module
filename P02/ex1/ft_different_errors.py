@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
 def test_error_type():
+    """Test different common Python error types.
+
+    Demonstrates handling of ValueError, ZeroDivisionError,
+    FileNotFoundError and KeyError.
+    """
     print("Testing ValueError...")
     try:
         int("abc")
@@ -35,6 +40,7 @@ def test_error_type():
 
 
 def garden_operation():
+    """Demonstrate handling of different error types in garden context."""
     print("=== Garden Error Types Demo ===")
     test_error_type()
     print("All error types tested successfully!")

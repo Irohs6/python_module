@@ -1,6 +1,19 @@
 #!/usr/bin/env python3
 
 def check_plant_health(plant_name, water_level, sunlight_hours):
+    """Validate plant health parameters.
+
+    Args:
+        plant_name: Name of the plant
+        water_level: Water level (1-10)
+        sunlight_hours: Sunlight hours (2-12)
+
+    Returns:
+        str: Success message if all parameters are valid
+
+    Raises:
+        ValueError: If any parameter is invalid
+    """
     if not plant_name:
         raise ValueError("Error: Plant name cannot be empty!")
     if water_level < 1:
@@ -15,6 +28,7 @@ def check_plant_health(plant_name, water_level, sunlight_hours):
 
 
 def test_plant_check():
+    """Test plant health validation with various inputs."""
     print("=== Garden Plant Health Checker ===")
 
     print("Testing good values...")

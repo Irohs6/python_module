@@ -1,38 +1,55 @@
 #!/usr/bin/env python3
 
 class GardenError(Exception):
-    """Erreur générale liée au jardin."""
+    """General garden-related error."""
     pass
 
 
 class PlantError(GardenError):
-    """Erreur liée à une plante."""
+    """Plant-related error."""
     pass
 
 
 class WaterError(GardenError):
-    """Erreur liée à l'arrosage."""
+    """Watering-related error."""
     pass
 
 
 class Plant:
-    """Représente une plante simple avec un niveau d'eau."""
+    """Represent a simple plant with a water level."""
     def __init__(self, name, water_level=2):
         self.name = name
         self.water_level = water_level
 
     def water(self, amount):
+        """Add water to the plant.
+
+        Args:
+            amount: Amount of water to add
+
+        Raises:
+            WaterError: If amount is not positive
+        """
         if amount <= 0:
             raise WaterError("Water amount must be positive.")
         self.water_level += amount
 
     def check(self):
+        """Check if plant has sufficient water.
+
+        Returns:
+            bool: True if plant is healthy
+
+        Raises:
+            PlantError: If plant is wilting
+        """
         if self.water_level < 3:
             raise PlantError(f"{self.name} is wilting!")
         return True
 
 
 def demo():
+    """Demonstrate custom garden errors."""
     print("=== Custom Garden Errors Demo ===")
 
     plant = Plant("Tomato", water_level=1)

@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 
 def water_plant(plant_list):
+    """Water plants with guaranteed cleanup.
+
+    Args:
+        plant_list: Tuple of plant names to water
+
+    Note:
+        Cleanup always happens via finally block
+    """
     print("Opening watering system")
     try:
         for plant in plant_list:
