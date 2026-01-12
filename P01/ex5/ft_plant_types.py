@@ -16,7 +16,7 @@ class Flower(Plant):
         self.color = color
 
     def bloom(self):
-        print(f"{self.name} is blooming beautifully!")
+        print(f"{self.name} is blooming beautifully!\n")
 
     def get_info(self):
         return (
@@ -33,7 +33,7 @@ class Tree(Plant):
         self.diam = trunk_diameter
 
     def produce_shade(self):
-        print(f"{self.name} provides {self.diam * 2} square meters of shade")
+        print(f"{self.name} provides {self.diam * 2} square meters of shade\n")
 
     def get_info(self):
         return (
@@ -59,28 +59,29 @@ class Vegetable(Plant):
 
     def get_nutri(self):
         return (
-            f"{self.name} is rich in {self.nutri_val}"
+            f"{self.name} is rich in {self.nutri_val}\n"
         )
 
     def get_info(self):
         return (
-            f"{self.name} (Vegetable):"
-            f"{self.height}cm,"
-            f"{self.age} days,"
+            f"{self.name} (Vegetable): "
+            f"{self.height}cm, "
+            f"{self.age} days, "
             f"{self.season} harvest"
             )
 
 
 if __name__ == "__main__":
     rose = Flower("rose", 25, 30, "red")
-    tulipe = Flower("Tulipe", 30, 15, "Yellow")
+    tulipe = Flower("Tulipe", 30, 15, "yellow")
 
     oak = Tree("oak", 300, 100, 75)
     pine = Tree("pin", 400, 80, 50)
 
-    tomato = Vegetable("tomato", 15, 25, "Summer", "Vitamin C")
-    carrot = Vegetable("carrot", 10, 5, "Summer", "Vitamin A")
-    print(" === Garden Plant Types === ")
+    tomato = Vegetable("tomato", 15, 25, "summer", "Vitamin C")
+    carrot = Vegetable("carrot", 10, 5, "summer", "Vitamin A")
+
+    print(" === Garden Plant Types === \n")
     print(rose.get_info())
     rose.bloom()
     print(tulipe.get_info())

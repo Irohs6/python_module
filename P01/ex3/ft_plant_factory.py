@@ -7,7 +7,7 @@ class Plant:
         self.age = age
 
     def get_info(self):
-        return (f"{self.name}: {self.height}cm {self.age} days old")
+        return (f"{self.name} ({self.height}cm, {self.age} days)")
 
     def grow(self):
         self.height = self.height + 1
@@ -15,21 +15,22 @@ class Plant:
 
 
 if __name__ == "__main__":
-    # Centralisation des valeurs initiales
+
     plants_data = [
         ("rose", 25, 30),
+        ("oak", 200, 365),
+        ("cactus", 5, 90),
         ("sunflower", 80, 45),
-        ("cactus", 15, 120),
-        ("orchid", 18, 60),
-        ("bamboo", 150, 200)
+        ("Fern", 15, 120)
         ]
-    # Création automatique des plantes
-    plants = []
-    for name, height, age in plants_data:
-        plant = Plant(name, height, age)
-        plants.append(plant)
+
+    plants = {
+        name: Plant(name, height, age) for name, height, age in plants_data
+        }
+
     print("=== Plant Factory Output ===")
-    for plant in plants:
+
+    for plant in plants.values():
         print("Created:", plant.get_info())
-    print(f"Total plants created: {len(plants)}")
-    print(plants)
+
+    print(f"\nTotal plants created: {len(plants)}")

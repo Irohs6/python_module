@@ -7,7 +7,7 @@ class Plant:
         self.age = age
 
     def print_plant(self):
-        print(f"{self.name}: {self.height}cm {self.age} days old")
+        print(f"{self.name}: {self.height}cm, {self.age} days old")
 
 
 if __name__ == "__main__":

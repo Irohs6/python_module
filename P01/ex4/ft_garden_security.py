@@ -3,8 +3,8 @@
 class SecurePlant:
     def __init__(self, name: str, height: int, age: int):
         self.name = name.capitalize()
-        self.height = height
-        self.age = age
+        self.__height = height
+        self.__age = age
 
     def get_height(self):
         return self.height
@@ -14,7 +14,7 @@ class SecurePlant:
             print(f"Invalid operation attempted: height {height}cm [REJECTED]")
             print("Security: Negative height rejected")
         else:
-            self.height = height
+            self.__height = height
             print(f"Height updated: {height}cm [OK]")
 
     def get_age(self):
@@ -25,15 +25,15 @@ class SecurePlant:
             print(f"Invalid operation attempted: age {new_age} [REJECTED]")
             print("Security: Negative age rejected")
         else:
-            self.age = new_age
+            self.__age = new_age
             print(f"Age updated: {new_age} days [OK]")
 
     def get_info(self):
-        return (f"{self.name}: {self.height}cm {self.age} days old")
+        return (f"{self.name} ({self.__height}cm, {self.__age} days)")
 
     def grow(self):
-        self.height = self.height + 1
-        self.age = self.age + 1
+        self.__height = self.__height + 1
+        self.__age = self.__age + 1
 
 
 if __name__ == "__main__":
@@ -44,16 +44,21 @@ if __name__ == "__main__":
         ("orchid", 18, 60),
         ("bamboo", 150, 200)
         ]
-    plants = []
-    for name, height, age in plants_data:
-        plant = SecurePlant(name, height, age)
-        plants.append(plant)
+
+    plants = {
+        name: SecurePlant(name, height, age)
+        for name, height, age in plants_data
+        }
+
     print("=== Garden Security System ===")
-    for plant in plants:
+
+    for plant in plants.values():
         print("Created:", plant.name)
         plant.set_height(-5)
         plant.set_age(-5)
         plant.set_height(25)
         plant.set_age(30)
+        print("\n")
 
-    print(f"Total plants created: {len(plants)}")
+    for plant in plants.values():
+        print(f"Curent plant: {plant.get_info()}")
