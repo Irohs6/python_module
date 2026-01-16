@@ -26,10 +26,10 @@ def test_error_type():
 
         print("Testing KeyError...")
     try:
-        test = {"rose": 1}
+        test: str = {"rose": 1}
         print(test["tulipe"])
     except KeyError:
-        print("Caught KeyError: 'missing\\_plant'")
+        print("Caught KeyError: 'missing_plant'")
 
         print("Testing multiple errors together...")
     try:

@@ -1,14 +1,20 @@
+#!/usr/bin/env python3
+
 def display_inventory(data: dict, player_name: str):
     print(f"=== {player_name.capitalize()}'s Inventory  ===")
     categories = {}
     if player_name in data["players"]:
+
         for item, quantite in data["players"][player_name]["items"].items():
+
             item_info = data["catalog"][item]
             item_type = item_info["type"]
+
             if item_type in categories:
                 categories[item_type] += quantite
             else:
                 categories[item_type] = quantite
+
             print(
                 f"{item} "
                 f"({data['catalog'][item]['type']}, "
@@ -17,11 +23,16 @@ def display_inventory(data: dict, player_name: str):
                 f"{data['catalog'][item]['value']} gold each = "
                 f"{quantite * data['catalog'][item]['value']} gold"
             )
+
         print("\n")
+
         print(
-            f"Inventory value: " f"{data['players'][player_name]['total_value']} gold"
+            f"Inventory value: "
+            f"{data['players'][player_name]['total_value']} gold"
         )
-        print(f"Item count: " f"{data['players'][player_name]['item_count']} items")
+
+        print(f"Item count: "
+              f"{data['players'][player_name]['item_count']} items")
         print("Categories: ", end="")
         for key, value in categories.items():
             print(f"{key}({value}) ", end=", ")

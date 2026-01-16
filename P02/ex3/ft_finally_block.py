@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-def water_plant(plant_list):
+def water_plants(plant_list: list[str]) -> None:
     """Water plants with guaranteed cleanup.
 
     Args:
@@ -13,19 +13,23 @@ def water_plant(plant_list):
     try:
         for plant in plant_list:
             if plant is None:
-                raise Exception
+                raise ValueError
             print(f"Watering {plant} ")
-    except Exception:
+    except ValueError:
         print("Error: Cannot water None - invalid plant!")
     finally:
         print("Closing watering system (cleanup)")
 
 
-if __name__ == "__main__":
-    print("=== Garden Watering System ===\n")
+def test_watering_system() -> None:
     print("Testing normal watering...")
-    water_plant(("tomato", "letuce", "carrots"))
+    water_plants(("tomato", "lettuce", "carrots"))
     print("Watering completed successfully!")
     print("\nTesting with error...")
-    water_plant(("tomato", None, "carrots"))
+    water_plants(("tomato", None, "carrots"))
+
+
+if __name__ == "__main__":
+    print("=== Garden Watering System ===\n")
+    test_watering_system()
     print("\nCleanup always happens, even with errors!")

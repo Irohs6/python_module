@@ -24,6 +24,7 @@ if __name__ == "__main__":
         ("bamboo", 150, 200)
         ]
 
+    # plants = {Plant(name, height, age) for name, height, age in plants_data)
     plants = {
         name: Plant(name, height, age) for name, height, age in plants_data
         }
@@ -43,5 +44,5 @@ if __name__ == "__main__":
 
     for plant in plants.values():
         print(plant.get_info())
-
-    print(f"Growt this week: +{total_grow}cm")
+    print(plants)
+    print(f"Growth this week: +{total_grow}cm")

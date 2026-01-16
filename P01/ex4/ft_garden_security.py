@@ -45,6 +45,8 @@ if __name__ == "__main__":
         ("bamboo", 150, 200)
         ]
 
+    iris = SecurePlant("iris", 12, -5)
+    print(iris.get_info())
     plants = {
         name: SecurePlant(name, height, age)
         for name, height, age in plants_data

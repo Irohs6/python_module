@@ -1,0 +1,84 @@
+Rapport d’évaluation P02 — Gestion des erreurs (Ex0 à Ex5)
+Date: 2026-01-16
+
+Légende:
+✅ Conforme / OK
+❌ Non conforme / À corriger
+⚠️ Mineur / Acceptable mais perfectible
+
+Ex0 — ft_first_exception.py
+Statut: ✅
+Conformité au sujet:
+✅ Utilise try/except avec gestion de `ValueError` et bloc `else`.
+✅ Comportement interactif via `input()`; la logique reste conforme.
+Résumé & remarques:
+- Validation robuste de l’entrée (conversion en int) et messages explicites (trop chaud/froid, non numérique).
+⚠️ Le script ne démontre plus plusieurs cas automatiquement (désormais interactif). Acceptable si l’évaluateur ne requiert pas une sortie identique à l’exemple.
+Note: 9.5/10
+
+Ex1 — ft_different_errors.py
+Statut: ✅ (fonctionnel)
+Conformité au sujet:
+✅ Démonstration de `ValueError`, `ZeroDivisionError`, `FileNotFoundError`, `KeyError`.
+✅ Exemple d’`except` multi-exceptions pour montrer la continuité du programme.
+⚠️ Message FileNotFound: ouvre "file.txt" mais affiche "missing.txt" (écart cosmétique).
+✅ Correction du message de KeyError: maintenant `'missing_plant'` (OK).
+⚠️ Annotation `test: str = {"rose": 1}` incohérente (dict annoté en str) — sans impact à l’exécution.
+Note: 9/10
+
+Ex2 — ft_custom_errors.py
+Statut: ✅
+Conformité au sujet:
+✅ Définit `GardenError`, `PlantError`, `WaterError` avec héritage correct.
+✅ Fonctions qui lèvent ces erreurs (`Plant.check()` → `PlantError`, `Plant.water()` → `WaterError`).
+✅ Capture spécifique par type et démonstration que `GardenError` attrape tout l’écosystème.
+⚠️ Messages proches de l’exemple mais pas identiques (acceptable si la sortie exacte n’est pas exigée).
+Résumé & remarques:
+- Conception claire, héritage pertinent et démo lisible.
+Note: 9.5/10
+
+Ex3 — ft_finally_block.py
+Statut: ✅
+Conformité au sujet:
+✅ Fonction demandée `water_plants(plant_list)` présente.
+✅ `finally` qui ferme toujours le système d’arrosage.
+✅ Gestion d’entrée invalide via `ValueError` (plus précis que `Exception`).
+✅ Démo demandée dans `test_watering_system()` et appelée depuis `__main__`.
+⚠️ Détails mineurs: espace en trop après le nom dans "Watering X "; type hint `list[str]` mais appel avec tuple (sans incidence).
+Note: 9.5/10
+
+Ex4 — ft_raise_errors.py
+Statut: ✅
+Conformité au sujet:
+✅ `check_plant_health` vérifie nom non vide, eau ∈ [1,10], soleil ∈ [2,12].
+✅ Lève `ValueError` avec messages explicites et retourne un message de succès sinon.
+✅ Fonction de démo demandée `test_plant_checks()` conforme et utilisée.
+✅ Démo couvre les cas bons et mauvais et gère les exceptions.
+Note: 9.5/10
+
+Ex5 — ft_garden_management.py
+Statut: ❌ (manque démo de recovery et nommage de test)
+Conformité au sujet:
+✅ `GardenManager` avec méthodes pour ajouter, arroser (avec `finally`), et vérifier la santé.
+✅ Utilise vos exceptions personnalisées et gère les erreurs proprement.
+✅ Utilise `try/except/finally` au bon endroit et lève des erreurs adaptées.
+✅ Continue à fonctionner même avec des erreurs (ex: ajout invalide géré, santé vérifiée ensuite).
+❌ Fonction de démo demandée `test_garden_management()` (actuel: dans `__main__`).
+❌ Démonstration explicite de "recovery" (pénurie d’eau → erreur capturée → poursuite) absente.
+⚠️ `add_plant` retourne l’objet exception (imprimé ensuite); un message serait plus homogène côté API.
+⚠️ Quelques divergences de messages (ponctuation, valeurs par défaut d’ensoleillement).
+Note: 8/10
+
+Synthèse et note globale
+- Conformité fonctionnelle générale: très bonne (concepts bien démontrés: exceptions personnalisées, finally, raise, multi-erreurs). Les corrections apportées à Ex3/Ex4 améliorent nettement la conformité.
+- Conformité stricte au libellé: encore perfectible pour Ex5 (fonction de test et recovery explicite manquantes).
+- Note globale: 9/10
+
+Recommandations minimales pour conformité 100%
+1) Ex3: Renommer `water_plant` → `water_plants` et déplacer la démo dans `test_watering_system()`; lever `ValueError` pour l’entrée invalide.
+2) Ex4: Renommer `test_plant_check` → `test_plant_checks`.
+3) Ex5: Ajouter `test_garden_management()` qui:
+   - Initialise un réservoir faible pour provoquer une pénurie pendant l’arrosage,
+   - Capture "Not enough water in tank",
+   - Montre que le système poursuit ensuite (afficher une opération réussie après l’erreur).
+4) Aligner les messages avec les exemples si l’évaluateur exige la sortie exacte (ponctuation, typos, espaces).
