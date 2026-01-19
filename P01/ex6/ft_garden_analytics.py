@@ -9,7 +9,7 @@ class Plant:
     def grow(self):
         self.height += 1
         self.grow_count += 1
-        print(f"{self.name} grew 1cm.")
+        return (f"{self.name} grew 1cm.")
 
     def get_info(self):
         return f"{self.name}: {self.height}cm"
@@ -51,7 +51,7 @@ class GardenManager:
     def help_grow(self):
         print(f"{self.owner} is helping all plants grow ...")
         for plant in self.plants:
-            plant.grow()
+            print(plant.grow())
 
     def report(self):
         added = len(self.plants)
@@ -70,7 +70,8 @@ class GardenManager:
         return value >= 0
 
     @classmethod
-    def create_garden_network(cls, owners: list[str]):
+    def create_garden_network(cls, owners: list["GardenManager"]
+                              ) -> list["GardenManager"]:
         return [cls(owner) for owner in owners]
 
     class GardenStat():
