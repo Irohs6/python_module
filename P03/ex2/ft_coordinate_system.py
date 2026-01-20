@@ -4,15 +4,35 @@ import sys
 import math
 
 
-def parse_coordinate(args):
-    """Parse command line arguments to extract coord."""
+def parse_coordinate(args: list[str]) -> tuple[int, int, int] | None:
+    """Parse command line arguments to extract 3D coordinates.
+
+    Converts a string in format 'x,y,z' into a tuple of three integers
+    representing a 3D position in game space.
+
+    Args:
+        args: String containing coordinates in format 'x,y,z'
+              where x, y, z are integers.
+
+    Returns:
+        tuple[int, int, int]: A tuple containing (x, y, z) coordinates
+                              if parsing succeeds.
+        None: If the string format is invalid or values cannot be
+              converted to integers.
+
+    Examples:
+        >>> parse_coordinate("10,20,5")
+        (10, 20, 5)
+        >>> parse_coordinate("abc,def,ghi")
+        None
+    """
     print(f'Parsing coordinates: "{args}"')
-    parts = args.split(",")
+    parts: list[str] = args.split(",")
     if len(parts) != 3:
         print(f"Parsing invalid coordinates: '{args}'")
         print("Error parsing coordinates: expected exactly 3 values (x,y,z)")
         return None
-    coords = []
+    coords: list[int] = []
     for part in parts:
         try:
             coords.append(int(part))
@@ -24,42 +44,90 @@ def parse_coordinate(args):
     return tuple(coords)
 
 
-def calcul_distance(positions_one, position_two):
+def calcul_distance(
+    positions_one: tuple[int, int, int],
+        position_two: tuple[int, int, int]) -> float:
+    """Calculate the 3D Euclidean distance between two points.
+
+    Uses the 3D distance formula:
+    distance = sqrt((x2-x1)² + (y2-y1)² + (z2-z1)²)
+
+    This is the extension of the Pythagorean theorem to 3D space.
+
+    Args:
+        positions_one: First 3D coordinate as tuple (x1, y1, z1).
+        position_two: Second 3D coordinate as tuple (x2, y2, z2).
+
+    Returns:
+        float: The Euclidean distance between the two points.
+
+    Examples:
+        >>> calcul_distance((0, 0, 0), (3, 4, 0))
+        5.0
+        >>> calcul_distance((10, 20, 5), (0, 0, 0))
+        22.91...
+    """
+    x1: int
+    y1: int
+    z1: int
     x1, y1, z1 = positions_one
+    x2: int
+    y2: int
+    z2: int
     x2, y2, z2 = position_two
-    dx = x2 - x1
-    dy = y2 - y1
-    dz = z2 - z1
-    return math.sqrt(dx*dx + dy*dy + dz*dz)
+    dx: int = x2 - x1
+    dy: int = y2 - y1
+    dz: int = z2 - z1
+    return math.sqrt(dx * dx + dy * dy + dz * dz)
 
 
 def main():
+    """Main function for the 3D coordinate system demonstration.
+
+    Processes command line arguments to:
+    - Calculate distance from a point to origin (1 argument)
+    - Calculate distance between two points (2 arguments)
+    - Display usage information (no arguments)
+
+    Command line usage:
+        python3 ft_coordinate_system.py x,y,z
+        python3 ft_coordinate_system.py x1,y1,z1 x2,y2,z2
+
+    Also demonstrates tuple unpacking by extracting x, y, z values
+    from parsed coordinates.
+    """
     print("=== Game Coordinate System ===\n")
 
     if len(sys.argv) == 2:
-        pos_one = parse_coordinate(sys.argv[1])
-        origin = (0, 0, 0)
+        pos_one: tuple[int, int, int] | None = parse_coordinate(sys.argv[1])
+        origin: tuple[int, int, int] = (0, 0, 0)
 
         if not pos_one:
             return
-        distance = calcul_distance(pos_one, origin)
+        distance: float = calcul_distance(pos_one, origin)
         print(f"Distance between {pos_one} and {origin}: {distance:.2f}\n")
 
         print("Unpacking demonstration:")
+        x: int
+        y: int
+        z: int
         x, y, z = pos_one
         print(f"Player at x={x}, y={y}, z={z}")
         print(f"Coordinates: X={x}, Y={y}, Z={z}\n")
         return
 
     if len(sys.argv) == 3:
-        pos_one = parse_coordinate(sys.argv[1])
-        pos_two = parse_coordinate(sys.argv[2])
+        pos_one: tuple[int, int, int] | None = parse_coordinate(sys.argv[1])
+        pos_two: tuple[int, int, int] | None = parse_coordinate(sys.argv[2])
         if not pos_one or not pos_two:
             return
-        distance = calcul_distance(pos_one, pos_two)
+        distance: float = calcul_distance(pos_one, pos_two)
         print(f"Distance between {pos_one} and {pos_two}: {distance:.2f}\n")
 
         print("Unpacking demonstration:")
+        x: int
+        y: int
+        z: int
         x, y, z = pos_one
         print(f"Player at x={x}, y={y}, z={z}")
         print(f"Coordinates: X={x}, Y={y}, Z={z}\n")

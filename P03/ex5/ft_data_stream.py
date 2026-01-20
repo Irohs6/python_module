@@ -1,11 +1,190 @@
 #!/usr/bin/env python3
+"""
+Exercise 5: Stream Wizard
+Demonstrates generator usage for memory-efficient data streaming.
+"""
 
-def 
+import time
 
 
-if __name__ == "__main__":
+def game_event_stream(events: list[dict]):
+    """Generator that yields game events one by one.
 
-    data = [
+    Instead of returning all events at once, this generator yields
+    them one at a time, enabling memory-efficient processing.
+
+    Args:
+        events: List of event dictionaries.
+
+    Yields:
+        dict: Individual event dictionary.
+    """
+    for event in events:
+        yield event
+
+
+def high_level_filter(events: list[dict], min_level: int = 10):
+    """Generator that filters events for high-level players.
+
+    Args:
+        events: List of event dictionaries.
+        min_level: Minimum player level to include (default: 10).
+
+    Yields:
+        dict: Event from a player with level >= min_level.
+    """
+    for event in events:
+        if event["data"]["level"] >= min_level:
+            yield event
+
+
+def event_type_filter(events: list[dict], event_type: str):
+    """Generator that filters events by type.
+
+    Args:
+        events: List of event dictionaries.
+        event_type: Type of event to filter (e.g., 'kill', 'level_up').
+
+    Yields:
+        dict: Event matching the specified type.
+    """
+    for event in events:
+        if event["event_type"] == event_type:
+            yield event
+
+
+def fibonacci_generator(n: int):
+    """Generate the first n Fibonacci numbers.
+
+    The Fibonacci sequence starts with 0, 1, and each subsequent
+    number is the sum of the previous two: 0, 1, 1, 2, 3, 5, 8...
+
+    Args:
+        n: Number of Fibonacci numbers to generate.
+
+    Yields:
+        int: Next Fibonacci number in the sequence.
+    """
+    fibonacci_current: int = 0
+    fibonacci_next: int = 1
+    count: int = 0
+
+    while count < n:
+        yield fibonacci_current
+        fibonacci_current, fibonacci_next = (
+            fibonacci_next,
+            fibonacci_current + fibonacci_next,
+        )
+        count += 1
+
+
+def prime_generator(n: int):
+    """Generate the first n prime numbers.
+
+    A prime number is a natural number greater than 1 that has
+    no positive divisors other than 1 and itself.
+
+    Args:
+        n: Number of prime numbers to generate.
+
+    Yields:
+        int: Next prime number.
+    """
+
+    def is_prime(num: int) -> bool:
+        """Check if a number is prime."""
+        if num < 2:
+            return False
+        for divisor in range(2, int(num**0.5) + 1):
+            if num % divisor == 0:
+                return False
+        return True
+
+    count: int = 0
+    num: int = 2
+
+    while count < n:
+        if is_prime(num):
+            yield num
+            count += 1
+        num += 1
+
+
+def process_events(events: list[dict]) -> None:
+    """Process game events using generators for analytics.
+
+    Demonstrates streaming data processing with generators:
+    - Display sample events
+    - Calculate statistics using generator pipelines
+    - Show memory-efficient processing
+
+    Args:
+        events: List of event dictionaries to process.
+    """
+    print("=== Game Data Stream Processor ===")
+    print(f"Processing {len(events)} game events...\n")
+
+    # Display first 3 events using generator
+    count: int = 0
+    for event in game_event_stream(events):
+        count += 1
+        if count <= 3:
+            event_id: int = event["id"]
+            player: str = event["player"]
+            level: int = event["data"]["level"]
+            event_type: str = event["event_type"]
+            print(f"Event {event_id}: Player {player} " +
+                  f"(level {level}) {event_type}")
+        elif count == 4:
+            print("...")
+
+    print("\n=== Stream Analytics ===")
+
+    # Statistics using generators
+    total: int = 0
+    high_level_count: int = 0
+    event_types_count: dict[str, int] = {}
+
+    # Process all events with generator (memory efficient!)
+    for event in game_event_stream(events):
+        total += 1
+
+        # Count high-level players
+        if event["data"]["level"] >= 10:
+            high_level_count += 1
+
+        # Count by event type
+        event_type_name: str = event["event_type"]
+        event_types_count[event_type_name] = (
+            event_types_count.get(event_type_name, 0) + 1
+        )
+
+    print(f"Total events processed: {total}")
+    print(f"High-level players (10+): {high_level_count}")
+
+    # Display event type counts
+    for event_type_name, event_count in event_types_count.items():
+        print(f"{event_type_name.capitalize()} events: {event_count}")
+
+    print("Memory usage: Constant (streaming)")
+
+    # Generator demonstration
+    print("\n=== Generator Demonstration ===")
+
+    # Fibonacci sequence
+    fib_list: list[int] = list(fibonacci_generator(10))
+    fib_str: str = ", ".join(map(str, fib_list))
+    print(f"Fibonacci sequence (first 10): {fib_str}")
+
+    # Prime numbers
+    primes_list: list[int] = list(prime_generator(5))
+    primes_str: str = ", ".join(map(str, primes_list))
+    print(f"Prime numbers (first 5): {primes_str}")
+
+
+def main() -> None:
+    """Main function to run the stream processor demo."""
+    data: list[dict] = [
         {
             "id": 1,
             "player": "frank",
@@ -358,4 +537,12 @@ if __name__ == "__main__":
         },
     ]
 
-    print(data[49]['data']['level'])
+    start_time: float = time.time()
+    process_events(data)
+    end_time: float = time.time()
+
+    print(f"\nProcessing time: {end_time - start_time:.3f} seconds")
+
+
+if __name__ == "__main__":
+    main()

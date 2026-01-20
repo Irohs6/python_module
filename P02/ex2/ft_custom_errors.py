@@ -48,7 +48,7 @@ class Plant:
         return True
 
 
-def demo():
+def demo() -> None:
     """Demonstrate custom garden errors."""
     print("=== Custom Garden Errors Demo ===")
 

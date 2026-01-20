@@ -1,30 +1,36 @@
 #!/usr/bin/env python3
 
+
 class GardenError(Exception):
     """General garden-related error."""
+
     pass
 
 
 class PlantError(GardenError):
     """Plant-related error."""
+
     pass
 
 
 class WaterError(GardenError):
     """Watering-related error."""
+
     pass
 
 
 class HealthError(GardenError):
     """Plant health-related error."""
+
     pass
 
 
 class Plant:
     """Represent a basic plant with growth tracking."""
 
-    def __init__(self, name: str, height: int, water_level: int = 5,
-                 sunlight_hours: int = 6):
+    def __init__(
+        self, name: str, height: int, water_level: int = 5,
+            sunlight_hours: int = 6):
         """Initialize a plant.
 
         Args:
@@ -57,8 +63,14 @@ class Plant:
 class FloweringPlant(Plant):
     """Represent a flowering plant with color."""
 
-    def __init__(self, name: str, height: int, water_level: int, color: str,
-                 sunlight_hours: int = 6):
+    def __init__(
+        self,
+        name: str,
+        height: int,
+        water_level: int,
+        color: str,
+        sunlight_hours: int = 6,
+    ):
         """Initialize a flowering plant.
 
         Args:
@@ -86,8 +98,9 @@ class FloweringPlant(Plant):
 class PrizeFlower(FloweringPlant):
     """Represent a prize-winning flowering plant."""
 
-    def __init__(self, name, height, water_level, color, score: int,
-                 sunlight_hours: int = 6):
+    def __init__(
+        self, name, height, water_level, color, score: int,
+            sunlight_hours: int = 6):
         """Initialize a prize flower.
 
         Args:
@@ -136,19 +149,19 @@ class GardenManager:
             plant: Plant to add
 
         Returns:
-            str: Success message or exception
+            str: Success message or error message
 
         Raises:
             PlantError: If plant name is empty
         """
         try:
             if not plant.name:
-                raise PlantError("Error adding plant:"
-                                 " Plant name cannot be empty!")
+                raise PlantError("Error adding plant:" " Plant name cannot"
+                                 " be empty!")
             self.plants.append(plant)
-            return f"Adding {plant.name} successfully"
+            return f"Added {plant.name} successfully"
         except PlantError as e:
-            return (e)
+            return e
 
     def help_grow(self):
         """Help all plants in the garden grow."""
@@ -173,23 +186,24 @@ class GardenManager:
         Raises:
             WaterError: If water tank is depleted
         """
-        print("Watering plants...")
-        print("Opening watering system")
         try:
+            if self.water_tank < 5:
+                raise WaterError("Not enough water in tank")
+            print("Watering plants...")
+            print("Opening watering system")
             for plant in self.plants:
                 if plant is None:
-                    raise WaterError("Error: Cannot water None"
-                                     " - invalid plant!")
-                print(f"Watering {plant.name}- success")
+                    raise WaterError("Error: Cannot water None" " "
+                                     "- invalid plant!")
+                print(f"Watering {plant.name} - success")
                 self.water_tank -= 5
-                if self.water_tank < 0:
-                    raise WaterError("Caught GardenError: Not enough"
-                                     " water in tank \n System "
-                                     " recovered and continuing...")
+                if self.water_tank < 5:
+                    raise WaterError("Not enough water in tank")
         except WaterError as e:
-            print(e)
+            print(f"Caught GardenError: {e}")
+            print("System recovered and continuing...")
         finally:
-            print("Closing watering system (cleanup)")
+            print("Closing watering system (cleanup)\n")
 
     @staticmethod
     def check_plant_health(plant: Plant):
@@ -207,19 +221,27 @@ class GardenManager:
         if not plant.name:
             raise HealthError("Error: Plant name cannot be empty!")
         if plant.water_level < 1:
-            raise HealthError(f"Error: Water level {plant.water_level}"
-                              " is too low (min 1)")
+            raise HealthError(
+                f"Error: Water level {plant.water_level}" " is too low (min 1)"
+            )
         if plant.water_level > 10:
-            raise HealthError(f"Error: Water level {plant.water_level}"
-                              " is too high (max 10)")
+            raise HealthError(
+                f"Error checking {plant.name}: Water level"
+                f" {plant.water_level} is too high (max 10)"
+            )
         if plant.sunlight < 2:
-            raise HealthError(f"Error: Sunlight hours {plant.sunlight}"
-                              " is too low (min 2)")
+            raise HealthError(
+                f"Error: Sunlight hours {plant.sunlight}" " is too low (min 2)"
+            )
         if plant.sunlight > 12:
-            raise HealthError(f"Error: Sunlight hours {plant.sunlight}"
-                              " is too high (max 12)")
-        return (f"{plant.name}: healthy (water: {plant.water_level},"
-                f" sun: {plant.sunlight})")
+            raise HealthError(
+                f"Error: Sunlight hours {plant.sunlight}" ""
+                " is too high (max 12)"
+            )
+        return (
+            f"{plant.name}: healthy (water: {plant.water_level},"
+            f" sun: {plant.sunlight})"
+        )
 
     @staticmethod
     def validate_height(value: int) -> bool:
@@ -245,7 +267,7 @@ class GardenManager:
         """
         return [cls(owner) for owner in owners]
 
-    class GardenStat():
+    class GardenStat:
         """Garden statistics calculation utilities."""
 
         @staticmethod
@@ -287,31 +309,30 @@ class GardenManager:
                 f"{nb_plant} regular, "
                 f"{nb_flower_plant} flowering, "
                 f"{nb_prize_plant} prize flowers"
-                )
+            )
 
 
-if __name__ == "__main__":
-    print("=== Garden Management System ===")
+def test_garden_management():
+    """Test garden management system with error handling and recovery."""
+    print("=== Garden Management System ===\n")
 
-    # Création d’un réseau de jardins
-    gardens = GardenManager.create_garden_network(["Alice", "Bob"])
-    alice = gardens[0]
-    bob = gardens[1]
+    # Create garden with low water to demonstrate recovery
+    alice = GardenManager("Alice", water_tank=15)
 
-    # Plantes d’Alice
+    # Test 1: Adding plants
+    print("Adding plants to garden...")
     tomato = Plant("tomato", 100)
     lettuce = FloweringPlant("lettuce", 25, 15, "red")
-    none = PrizeFlower(None, 50, 5, "yellow", 10)
+    invalid_plant = Plant("", 50)
 
-    print("Adding plants to garden...")
     print(alice.add_plant(tomato))
     print(alice.add_plant(lettuce))
-    print(alice.add_plant(none))
-
-    # système d’arrosage
+    print(alice.add_plant(invalid_plant))
+    print()
+    # Test 2: Watering plants (with cleanup)
     alice.water_plant()
 
-    # Check santé des plantes
+    # Test 3: Check plant health
     print("Checking plant health...")
     for plant in alice.plants:
         try:
@@ -319,5 +340,14 @@ if __name__ == "__main__":
             print(status)
         except HealthError as e:
             print(e)
+    print()
+    # Test 4: Error recovery demonstration
+    print("Testing error recovery...")
+    alice.water_tank = 0  # Force water shortage
+    alice.water_plant()
 
     print("Garden management system test complete!")
+
+
+if __name__ == "__main__":
+    test_garden_management()

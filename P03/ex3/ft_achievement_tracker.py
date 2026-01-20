@@ -1,19 +1,33 @@
 #!/usr/bin/env python3
 
 if __name__ == "__main__":
-    alice_success = {'first_kill', 'level_10', 'treasure_hunter',
-                     'speed_demon'}
+    alice_success: set[str] = {
+        "first_kill",
+        "level_10",
+        "treasure_hunter",
+        "speed_demon",
+    }
 
-    bob_success = {'first_kill', 'level_10', 'boss_slayer', 'collector'}
+    bob_success: set[str] = {"first_kill", "level_10",
+                             "boss_slayer", "collector"}
 
-    charlie_success = {'level_10', 'treasure_hunter', 'boss_slayer',
-                       'speed_demon', 'perfectionist'}
+    charlie_success: set[str] = {
+        "level_10",
+        "treasure_hunter",
+        "boss_slayer",
+        "speed_demon",
+        "perfectionist",
+    }
 
-    all_success = alice_success.union(bob_success.union(charlie_success))
-    common = alice_success.intersection
-    (bob_success.intersection(charlie_success))
-    rare = alice_success.symmetric_difference(
+    all_success: set[str] = alice_success.union(
+        bob_success.union(charlie_success))
+
+    common: set[str] = alice_success.intersection(
+        bob_success.intersection(charlie_success))
+
+    rare: set[str] = alice_success.symmetric_difference(
         bob_success.symmetric_difference(charlie_success))
+
     rare = rare.symmetric_difference(common)
     print("=== Achievement Tracker System ===\n")
 
@@ -22,10 +36,8 @@ if __name__ == "__main__":
     print(f"Player charlie achievements: {charlie_success}\n")
 
     print("=== Achievement Analytics ===")
-    print(f"All unique achivements: "
-          f"{all_success}")
-    print(f"Total unique achievements: "
-          f"{len(all_success)}\n")
+    print(f"All unique achivements: " f"{all_success}")
+    print(f"Total unique achievements: " f"{len(all_success)}\n")
 
     print(f"Common to all players: {common}")
     print(f"Rare achievements (1 player): {rare}\n")

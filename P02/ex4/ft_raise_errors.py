@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 def check_plant_health(plant_name: str, water_level: int,
                        sunlight_hours: int) -> str:
     """Validate plant health parameters.
@@ -18,13 +19,17 @@ def check_plant_health(plant_name: str, water_level: int,
     if not plant_name:
         raise ValueError("Error: Plant name cannot be empty!")
     if water_level < 1:
-        raise ValueError(f"Error: Water level {water_level} is too low (min 1)")
+        raise ValueError(f"Error: Water level {water_level}"
+                         " is too low (min 1)")
     if water_level > 10:
-        raise ValueError(f"Error: Water level {water_level} is too high (max 10)")
+        raise ValueError(f"Error: Water level {water_level}"
+                         " is too high (max 10)")
     if sunlight_hours < 2:
-        raise ValueError(f"Error: Sunlight hours {sunlight_hours} is too low (min 2)")
+        raise ValueError(f"Error: Sunlight hours {sunlight_hours}"
+                         " is too low (min 2)")
     if sunlight_hours > 12:
-        raise ValueError(f"Error: Sunlight hours {sunlight_hours} is too high (max 12)")
+        raise ValueError(f"Error: Sunlight hours {sunlight_hours} "
+                         "is too high (max 12)")
     return f"Plant '{plant_name}' is healthy!"
 
 

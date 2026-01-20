@@ -12,26 +12,26 @@ def test_error_type():
     except ValueError:
         print("Caught ValueError: invalid literal for int()")
 
-        print("Testing ZeroDivisionError...")
+    print("Testing ZeroDivisionError...")
     try:
         10 / 0
     except ZeroDivisionError:
         print("Caught ZeroDivisionError: division by zero")
 
-        print("Testing FileNotFoundError...")
+    print("Testing FileNotFoundError...")
     try:
         open("file.txt")
     except FileNotFoundError:
         print("Caught FileNotFoundError: No such file 'missing.txt'")
 
-        print("Testing KeyError...")
+    print("Testing KeyError...")
     try:
         test: str = {"rose": 1}
         print(test["tulipe"])
     except KeyError:
         print("Caught KeyError: 'missing_plant'")
 
-        print("Testing multiple errors together...")
+    print("Testing multiple errors together...")
     try:
         int("abc")
         10 / 0
@@ -39,7 +39,7 @@ def test_error_type():
         print("Caught an error, but program continues!")
 
 
-def garden_operation():
+def garden_operation() -> None:
     """Demonstrate handling of different error types in garden context."""
     print("=== Garden Error Types Demo ===")
     test_error_type()
