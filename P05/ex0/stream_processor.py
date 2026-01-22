@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, List
 
 
 class DataProcessor(ABC):
     """Abstract base class for data processors."""
 
     @abstractmethod
-    def process(self, data: str) -> str:
+    def process(self, data: Any) -> str:
         """Process the input data and return the result string."""
         pass
 
@@ -18,8 +18,8 @@ class DataProcessor(ABC):
         pass
 
     def format_output(self, result: str) -> str:
-        """Format the output string"""
-        pass
+        """Format the output for numeric processing."""
+        return result
 
 
 class NumericProcessor(DataProcessor):
@@ -27,15 +27,12 @@ class NumericProcessor(DataProcessor):
 
     def process(self, data: Any) -> str:
         """Process numeric data by calculating its square."""
-        if self.validate(data):
-            return (
-                f"Processing data: {data}\n"
-                "Validation: Numeric data verified\n"
-                f"Output: Processed {len(data)} numeric values,"
-                f" sum={sum(data)}, avg={len(data) / sum(data)}"
-            )
-        else:
-            return "Not processing no numeric value"
+        return (
+            f"Processing data: {data}\n"
+            "Validation: Numeric data verified\n"
+            f"Output: Processed {len(data)} numeric values,"
+            f" sum={sum(data)}, avg={sum(data) / len(data)}"
+        )
 
     def validate(self, data: Any) -> bool:
         """Validate if data is numeric."""
@@ -53,15 +50,12 @@ class TextProcessor(DataProcessor):
 
     def process(self, data: Any) -> str:
         """Process numeric data by calculating its square."""
-        if self.validate(data):
-            return (
-                f"Processing data: {data}\n"
-                "Validation: Text data verified\n"
-                f"Output: Processed  text: {len(data)} characters,"
-                f" {len(data.split())}"
-            )
-        else:
-            return "Not processing no numeric value"
+        return (
+            f"Processing data: {data}\n"
+            "Validation: Text data verified\n"
+            f"Output: Processed  text: {len(data)} characters,"
+            f" {len(data.split())}"
+        )
 
     def validate(self, data: Any) -> bool:
         """Validate if data is numeric."""
@@ -75,8 +69,14 @@ class TextProcessor(DataProcessor):
 if __name__ == "__main__":
     data = [1, 2, 3]
     numeric_proces = NumericProcessor()
-    result = numeric_proces.process(data)
-    print(numeric_proces.format_output(result))
     text_proces = TextProcessor()
-    result = text_proces.process(data)
-    print(text_proces.format_output(result))
+
+    try:
+        for process in (numeric_proces, text_proces):
+            if process.validate(data):
+                result = process.process(data)
+                print(process.format_output(result))
+            else:
+                raise TypeError("Type incorrect")
+    except TypeError as e:
+        print(str(e))
