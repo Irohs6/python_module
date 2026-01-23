@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-def test_error_type():
+def test_error_type() -> None:
     """Test different common Python error types.
 
     Demonstrates handling of ValueError, ZeroDivisionError,
@@ -20,13 +20,13 @@ def test_error_type():
 
     print("Testing FileNotFoundError...")
     try:
-        open("file.txt")
+        open("missing.txt")
     except FileNotFoundError:
         print("Caught FileNotFoundError: No such file 'missing.txt'")
 
     print("Testing KeyError...")
     try:
-        test: str = {"rose": 1}
+        test: dict = {"rose": 1}
         print(test["tulipe"])
     except KeyError:
         print("Caught KeyError: 'missing_plant'")

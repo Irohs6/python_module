@@ -43,25 +43,25 @@ def test_plant_checks() -> None:
     except ValueError as e:
         print(e)
 
-    print("Testing empty plant name...")
+    print("\nTesting empty plant name...")
     try:
         print(check_plant_health("", 5, 6))
     except ValueError as e:
         print(e)
 
-    print("Testing bad water level...")
+    print("\nTesting bad water level...")
     try:
         print(check_plant_health("tomato", 15, 5))
     except ValueError as e:
         print(e)
 
-    print("Testing bad sunlight hours...")
+    print("\nTesting bad sunlight hours...")
     try:
         print(check_plant_health("tomato", 5, 0))
     except ValueError as e:
         print(e)
 
-    print("All error raising tests completed")
+    print("\nAll error raising tests completed")
 
 
 if __name__ == "__main__":

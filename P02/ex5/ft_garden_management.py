@@ -45,13 +45,13 @@ class Plant:
         self.sunlight = sunlight_hours
         self.grow_count = 0
 
-    def grow(self):
+    def grow(self) -> None:
         """Increase plant height and growth count."""
         self.height += 1
         self.grow_count += 1
         print(f"{self.name} grew 1cm.")
 
-    def get_info(self):
+    def get_info(self) -> str:
         """Get plant information string.
 
         Returns:
@@ -70,7 +70,7 @@ class FloweringPlant(Plant):
         water_level: int,
         color: str,
         sunlight_hours: int = 6,
-    ):
+    ) -> None:
         """Initialize a flowering plant.
 
         Args:
@@ -84,7 +84,7 @@ class FloweringPlant(Plant):
         self.color = color
         self.blooming = True
 
-    def get_info(self):
+    def get_info(self) -> str:
         """Get flowering plant information with color.
 
         Returns:
@@ -99,8 +99,8 @@ class PrizeFlower(FloweringPlant):
     """Represent a prize-winning flowering plant."""
 
     def __init__(
-        self, name, height, water_level, color, score: int,
-            sunlight_hours: int = 6):
+        self, name: str, height: int, water_level: int, color: str, score: int,
+            sunlight_hours: int = 6) -> None:
         """Initialize a prize flower.
 
         Args:
@@ -114,7 +114,7 @@ class PrizeFlower(FloweringPlant):
         super().__init__(name, height, water_level, color, sunlight_hours)
         self.score = score
 
-    def get_info(self):
+    def get_info(self) -> str:
         """Get prize flower information with score.
 
         Returns:
@@ -128,7 +128,7 @@ class GardenManager:
     """Manage a garden with plants and operations."""
 
     def __init__(self, owner: str, water_tank: int = 100,
-                 plants: list[Plant] = None):
+                 plants: list[Plant] = None) -> None:
         """Initialize garden manager.
 
         Args:
@@ -142,7 +142,7 @@ class GardenManager:
             plants = []
         self.plants = plants
 
-    def add_plant(self, plant: Plant):
+    def add_plant(self, plant: Plant) -> str | PlantError:
         """Add a plant to the garden.
 
         Args:
@@ -163,13 +163,13 @@ class GardenManager:
         except PlantError as e:
             return e
 
-    def help_grow(self):
+    def help_grow(self) -> None:
         """Help all plants in the garden grow."""
         print(f"{self.owner} is helping all plants grow ...")
         for plant in self.plants:
             plant.grow()
 
-    def report(self):
+    def report(self) -> None:
         """Generate and print garden report."""
         added = len(self.plants)
         growth = self.GardenStat.total_growth(self.plants)
@@ -180,7 +180,7 @@ class GardenManager:
         print(f"Plant added: {added}, Total growth: {growth}cm")
         print(f"Plant types: {self.GardenStat.count_type(self.plants)}")
 
-    def water_plant(self):
+    def water_plant(self) -> None:
         """Water all plants with cleanup guarantee.
 
         Raises:
@@ -196,9 +196,9 @@ class GardenManager:
                     raise WaterError("Error: Cannot water None" " "
                                      "- invalid plant!")
                 print(f"Watering {plant.name} - success")
-                self.water_tank -= 5
                 if self.water_tank < 5:
                     raise WaterError("Not enough water in tank")
+                self.water_tank -= 5
         except WaterError as e:
             print(f"Caught GardenError: {e}")
             print("System recovered and continuing...")
@@ -206,7 +206,7 @@ class GardenManager:
             print("Closing watering system (cleanup)\n")
 
     @staticmethod
-    def check_plant_health(plant: Plant):
+    def check_plant_health(plant: Plant) -> str:
         """Check if plant health parameters are valid.
 
         Args:
@@ -256,7 +256,8 @@ class GardenManager:
         return value >= 0
 
     @classmethod
-    def create_garden_network(cls, owners: list[str]):
+    def create_garden_network(cls, owners: list[str]
+                              ) -> list["GardenManager"]:
         """Create multiple gardens for different owners.
 
         Args:
@@ -271,7 +272,7 @@ class GardenManager:
         """Garden statistics calculation utilities."""
 
         @staticmethod
-        def total_growth(plants):
+        def total_growth(plants: list[Plant]) -> int:
             """Calculate total growth of all plants.
 
             Args:
@@ -286,7 +287,7 @@ class GardenManager:
             return total_grow
 
         @staticmethod
-        def count_type(plants):
+        def count_type(plants: list[Plant]) -> str:
             """Count different types of plants.
 
             Args:
@@ -312,12 +313,12 @@ class GardenManager:
             )
 
 
-def test_garden_management():
+def test_garden_management() -> None:
     """Test garden management system with error handling and recovery."""
     print("=== Garden Management System ===\n")
 
     # Create garden with low water to demonstrate recovery
-    alice = GardenManager("Alice", water_tank=15)
+    alice = GardenManager("Alice", 15)
 
     # Test 1: Adding plants
     print("Adding plants to garden...")

@@ -9,12 +9,14 @@ def process_command_line():
     args = sys.argv
     program_name = args[0]
     arguments = args[1:]
+    i: int = 1
 
     print(f"Program name: {program_name}")
     if arguments:
         print(f"Arguments received: {len(arguments)}")
-        for i, arg in enumerate(arguments, 1):
+        for arg in arguments:
             print(f"Argument {i}: {arg}")
+            i += 1
     else:
         print("No arguments provided!")
     print(f"Total arguments: {len(args)}")

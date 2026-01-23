@@ -4,7 +4,7 @@ import sys
 import math
 
 
-def parse_coordinate(args: list[str]) -> tuple[int, int, int] | None:
+def parse_coordinate(args: list[str]) -> tuple[int, ...] | None:
     """Parse command line arguments to extract 3D coordinates.
 
     Converts a string in format 'x,y,z' into a tuple of three integers
@@ -18,14 +18,8 @@ def parse_coordinate(args: list[str]) -> tuple[int, int, int] | None:
         tuple[int, int, int]: A tuple containing (x, y, z) coordinates
                               if parsing succeeds.
         None: If the string format is invalid or values cannot be
-              converted to integers.
+              converted to integers."""
 
-    Examples:
-        >>> parse_coordinate("10,20,5")
-        (10, 20, 5)
-        >>> parse_coordinate("abc,def,ghi")
-        None
-    """
     print(f'Parsing coordinates: "{args}"')
     parts: list[str] = args.split(",")
     if len(parts) != 3:
@@ -45,8 +39,8 @@ def parse_coordinate(args: list[str]) -> tuple[int, int, int] | None:
 
 
 def calcul_distance(
-    positions_one: tuple[int, int, int],
-        position_two: tuple[int, int, int]) -> float:
+    positions_one: tuple[int, ...],
+        position_two: tuple[int, ...]) -> float:
     """Calculate the 3D Euclidean distance between two points.
 
     Uses the 3D distance formula:
@@ -60,20 +54,8 @@ def calcul_distance(
 
     Returns:
         float: The Euclidean distance between the two points.
-
-    Examples:
-        >>> calcul_distance((0, 0, 0), (3, 4, 0))
-        5.0
-        >>> calcul_distance((10, 20, 5), (0, 0, 0))
-        22.91...
     """
-    x1: int
-    y1: int
-    z1: int
     x1, y1, z1 = positions_one
-    x2: int
-    y2: int
-    z2: int
     x2, y2, z2 = position_two
     dx: int = x2 - x1
     dy: int = y2 - y1
@@ -101,11 +83,11 @@ def main():
     if len(sys.argv) == 2:
         pos_one: tuple[int, int, int] | None = parse_coordinate(sys.argv[1])
         origin: tuple[int, int, int] = (0, 0, 0)
-
         if not pos_one:
             return
+        print(f"Parsed position: {pos_one}")
         distance: float = calcul_distance(pos_one, origin)
-        print(f"Distance between {pos_one} and {origin}: {distance:.2f}\n")
+        print(f"Distance between {origin} and {pos_one}: {distance:.2f}\n")
 
         print("Unpacking demonstration:")
         x: int
@@ -125,9 +107,7 @@ def main():
         print(f"Distance between {pos_one} and {pos_two}: {distance:.2f}\n")
 
         print("Unpacking demonstration:")
-        x: int
-        y: int
-        z: int
+
         x, y, z = pos_one
         print(f"Player at x={x}, y={y}, z={z}")
         print(f"Coordinates: X={x}, Y={y}, Z={z}\n")

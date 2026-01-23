@@ -8,8 +8,12 @@ if __name__ == "__main__":
         "speed_demon",
     }
 
-    bob_success: set[str] = {"first_kill", "level_10",
-                             "boss_slayer", "collector"}
+    bob_success: set[str] = {
+        "first_kill",
+        "level_10",
+        "boss_slayer",
+        "collector",
+    }
 
     charlie_success: set[str] = {
         "level_10",
@@ -18,17 +22,25 @@ if __name__ == "__main__":
         "speed_demon",
         "perfectionist",
     }
-
     all_success: set[str] = alice_success.union(
-        bob_success.union(charlie_success))
+        bob_success.union(charlie_success)
+    )
 
     common: set[str] = alice_success.intersection(
-        bob_success.intersection(charlie_success))
+        bob_success.intersection(charlie_success)
+    )
 
-    rare: set[str] = alice_success.symmetric_difference(
-        bob_success.symmetric_difference(charlie_success))
+    diff_alice = alice_success.difference(
+        bob_success).difference(charlie_success)
 
-    rare = rare.symmetric_difference(common)
+    diff_bob = bob_success.difference(
+        alice_success).difference(charlie_success)
+
+    diff_charlie = charlie_success.difference(
+        bob_success).difference(alice_success)
+
+    rare: set[str] = diff_alice.union(diff_bob).union(diff_charlie)
+
     print("=== Achievement Tracker System ===\n")
 
     print(f"Player alice achievements: {alice_success}")

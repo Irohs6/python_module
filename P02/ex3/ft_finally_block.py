@@ -23,10 +23,10 @@ def water_plants(plant_list: list[str]) -> None:
 
 def test_watering_system() -> None:
     print("Testing normal watering...")
-    water_plants(("tomato", "lettuce", "carrots"))
+    water_plants(["tomato", "lettuce", "carrots"])
     print("Watering completed successfully!")
     print("\nTesting with error...")
-    water_plants(("tomato", None, "carrots"))
+    water_plants(["tomato", None, "carrots"])
 
 
 if __name__ == "__main__":

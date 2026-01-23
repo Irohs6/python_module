@@ -21,8 +21,12 @@ def check_temperature(temp_str: str) -> None:
 
 
 def test_temperature_input() -> None:
-    temp_str: str = input("Enter a temperature")
-    check_temperature(temp_str)
+    for i in range(4):
+        try:
+            temp_str: str = input("Enter a temperature: ")
+            check_temperature(temp_str)
+        except ValueError as error:
+            print(error)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import Any
 
 
 class DataProcessor(ABC):
@@ -18,65 +18,77 @@ class DataProcessor(ABC):
         pass
 
     def format_output(self, result: str) -> str:
-        """Format the output for numeric processing."""
-        return result
+        return f"Output: {result}"
 
 
 class NumericProcessor(DataProcessor):
     """Processor for numeric data."""
 
     def process(self, data: Any) -> str:
-        """Process numeric data by calculating its square."""
-        return (
-            f"Processing data: {data}\n"
-            "Validation: Numeric data verified\n"
-            f"Output: Processed {len(data)} numeric values,"
-            f" sum={sum(data)}, avg={sum(data) / len(data)}"
-        )
+        total = sum(data)
+        avg = total / len(data)
+        return f"Processed {len(data)} numeric values, sum={total}, avg={avg}"
 
     def validate(self, data: Any) -> bool:
         """Validate if data is numeric."""
         if not isinstance(data, (list, tuple)):
-            return False
-        return all(isinstance(x, (int, float)) for x in data)
-
-    def format_output(self, result: str) -> str:
-        """Format the output for numeric processing."""
-        return result
+            raise TypeError("type incorrect")
+        if not all(isinstance(x, (int, float)) for x in data):
+            raise ValueError("List must contain only numbers")
+        return True
 
 
 class TextProcessor(DataProcessor):
     """Processor for text data."""
 
     def process(self, data: Any) -> str:
-        """Process numeric data by calculating its square."""
         return (
-            f"Processing data: {data}\n"
-            "Validation: Text data verified\n"
-            f"Output: Processed  text: {len(data)} characters,"
-            f" {len(data.split())}"
+            f"Processed text: {len(data)} characters, "
+            f"{len(data.split())} words"
         )
 
     def validate(self, data: Any) -> bool:
         """Validate if data is numeric."""
-        return isinstance(data, str)
+        if not isinstance(data, str):
+            raise TypeError("Text data must be a string")
+        return True
+
+
+class LogProcessor(DataProcessor):
+    """Processor for text data."""
+
+    def process(self, data: Any) -> str:
+        level, message = data.split(":", 1)
+        level = level.strip()
+        message = message.strip()
+
+        if level == "ERROR":
+            return f"[ALERT] ERROR level detected: {message}"
+        return f"[{level}] {level} level detected: {message}"
+
+    def validate(self, data: Any) -> bool:
+        if not isinstance(data, str):
+            raise TypeError("Log data must be a string")
+
+        if not any(level in data for level in ["ERROR", "INFO", "WARNING"]):
+            raise ValueError("Invalid log level")
+
+        return True
 
     def format_output(self, result: str) -> str:
-        """Format the output for numeric processing."""
-        return result
+        return f"LOG >> {result}"
 
 
 if __name__ == "__main__":
-    data = [1, 2, 3]
-    numeric_proces = NumericProcessor()
-    text_proces = TextProcessor()
+    processors = [
+        (NumericProcessor(), [1, 2, 3]),
+        (TextProcessor(), "Hello Nexus"),
+        (LogProcessor(), "INFO: System ready"),
+        ]
 
-    try:
-        for process in (numeric_proces, text_proces):
-            if process.validate(data):
-                result = process.process(data)
-                print(process.format_output(result))
-            else:
-                raise TypeError("Type incorrect")
-    except TypeError as e:
-        print(str(e))
+    for processor, data in processors:
+        try:
+            processor.validate(data)
+            print(processor.format_output(processor.process(data)))
+        except Exception as e:
+            print(f"Error: {e}")

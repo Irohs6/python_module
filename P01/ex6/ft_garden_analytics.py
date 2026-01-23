@@ -39,7 +39,7 @@ class PrizeFlower(FloweringPlant):
 
 class GardenManager:
     def __init__(self, owner: str, plants: list[Plant] = None):
-        self.owner = owner.capitalize()
+        self.owner = owner
         if plants is None:
             plants = []
         self.plants = plants
@@ -69,8 +69,12 @@ class GardenManager:
     def validate_height(value: int) -> bool:
         return value >= 0
 
+    def display_score(self):
+        score = self.GardenStat.total_score(self.plants)
+        print(f"{self.owner}'s score: {score} ", end="")
+
     @classmethod
-    def create_garden_network(cls, owners: list["GardenManager"]
+    def create_garden_network(cls, owners: list[str]
                               ) -> list["GardenManager"]:
         return [cls(owner) for owner in owners]
 
@@ -116,14 +120,16 @@ class GardenManager:
 if __name__ == "__main__":
     print("=== Garden Management System Demo ===")
 
+    charle = GardenManager("charle")
     gardens = GardenManager.create_garden_network(["Alice", "Bob"])
     alice = gardens[0]
     bob = gardens[1]
+    gardens.append(charle)
 
     oak = Plant("oak tree", 100)
     rose = FloweringPlant("rose", 25, "red")
     sunflower = PrizeFlower("sunflower", 50, "yellow", 10)
-
+    print(gardens[2].add_plant(oak))
     print(alice.add_plant(oak))
     print(alice.add_plant(rose))
     print(alice.add_plant(sunflower))
@@ -136,8 +142,8 @@ if __name__ == "__main__":
 
     print("Height validation test:", GardenManager.validate_height(10))
 
-    print(f"Garden scores "
-          f"- Alice: {alice.GardenStat.total_score(alice.plants)},"
-          f" Bob: {bob.GardenStat.total_score(bob.plants)}")
-
+    print("Garden scores: ", end="")
+    alice.display_score()
+    bob.display_score()
+    print()
     print(f"Total gardens managed: {len(gardens)}")

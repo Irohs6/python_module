@@ -108,7 +108,7 @@ def get_restock_suggestions(inventory: dict[str, int]) -> list[str]:
     Returns:
         list[str]: List of item names with quantity of 1.
     """
-    return [item for item, qty in inventory.items() if qty == 1]
+    return [item for item, qty in inventory.items() if qty <= 1]
 
 
 def calculate_percentages(inventory: dict[str, int]) -> dict[str, float]:

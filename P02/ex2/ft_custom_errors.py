@@ -17,11 +17,11 @@ class WaterError(GardenError):
 
 class Plant:
     """Represent a simple plant with a water level."""
-    def __init__(self, name, water_level=2):
+    def __init__(self, name: str, water_level: int) -> None:
         self.name = name
         self.water_level = water_level
 
-    def water(self, amount):
+    def water(self, amount: int) -> None:
         """Add water to the plant.
 
         Args:
@@ -34,7 +34,7 @@ class Plant:
             raise WaterError("Water amount must be positive.")
         self.water_level += amount
 
-    def check(self):
+    def check(self) -> bool:
         """Check if plant has sufficient water.
 
         Returns:
@@ -52,7 +52,7 @@ def demo() -> None:
     """Demonstrate custom garden errors."""
     print("=== Custom Garden Errors Demo ===")
 
-    plant = Plant("Tomato", water_level=1)
+    plant: Plant = Plant("Tomato", 1)
 
     print("Testing PlantError...")
     try:
@@ -72,6 +72,10 @@ def demo() -> None:
     except GardenError as e:
         print("Caught a garden error:", e)
 
+    try:
+        plant.water(-5)
+    except GardenError as e:
+        print("Caught a garden error:", e)
     print("All custom error types work correctly!")
 
 
