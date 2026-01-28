@@ -1,15 +1,4 @@
 #!/usr/bin/env python3
-"""
-Exercise 6: Data Alchemist - Analytics Dashboard
-
-Objectif: Démontrer la maîtrise des COMPREHENSIONS Python
-pour transformer et analyser des données.
-
-Concepts:
-- LIST COMPREHENSIONS: Filtrage et transformation
-- DICT COMPREHENSIONS: Création de mappings et groupements
-- SET COMPREHENSIONS: Extraction de valeurs uniques
-"""
 
 
 def demonstrate_list_comprehensions(data: dict) -> None:
@@ -59,7 +48,10 @@ def demonstrate_dict_comprehensions(data: dict) -> None:
             for player_data in data["players"].values()
             if (
                 (category == "high" and player_data["total_score"] > 5000)
-                or (category == "medium" and 2000 <= player_data["total_score"] <= 5000)
+                or (
+                    category == "medium"
+                    and 2000 <= player_data["total_score"] <= 5000
+                )
                 or (category == "low" and player_data["total_score"] < 2000)
             )
         )
@@ -69,7 +61,7 @@ def demonstrate_dict_comprehensions(data: dict) -> None:
 
     # Compter les achievements par joueur
     achievement_counts: dict[str, int] = {
-        player_name: player_data["achievements_count"]
+        player_name: len(player_data["achievements"])
         for player_name, player_data in data["players"].items()
     }
     print(f"Achievement counts: {achievement_counts}")
@@ -80,12 +72,18 @@ def demonstrate_set_comprehensions(data: dict) -> None:
     print("=== Set Comprehension Examples ===")
 
     # Extraire tous les joueurs uniques
-    unique_players: set[str] = {player_name for player_name in data["players"].keys()}
+    unique_players: set[str] = {
+        player_name for player_name in data["players"].keys()
+    }
     print(f"Unique players: {unique_players}")
 
     # Tous les game modes uniques
-    unique_modes: set[str] = {game_mode for game_mode in data["game_modes"]}
-    print(f"Unique game modes: {unique_modes}")
+    unique_achievements: set[str] = {
+            achievement
+            for player in data["players"].values()
+            for achievement in player["achievements"]
+        }
+    print(f"Unique achivements: {unique_achievements}")
 
     # Joueurs ayant participé à des sessions
     active_session_players: set[str] = {
@@ -99,31 +97,43 @@ def combined_analysis(data: dict) -> None:
     print("=== Combined Analysis ===")
 
     # Nombre total de joueurs (set comprehension)
-    total_players: int = len({player_name for player_name in data["players"].keys()})
+    total_players: int = len(
+        {player_name for player_name in data["players"].keys()}
+    )
     print(f"Total players: {total_players}")
 
     # Nombre total d'achievements uniques (direct access)
-    total_achievements: int = len(data["achievements"])
+    total_achievements: int = len({
+        achievement
+        for player in data["players"].values()
+        for achievement in player["achievements"]
+    })
     print(f"Total unique achievements: {total_achievements}")
 
     # Score moyen (list comprehension + sum)
     all_scores: list[int] = [
         player_data["total_score"] for player_data in data["players"].values()
     ]
-    average_score: float = sum(all_scores) / len(all_scores) if all_scores else 0
+    average_score: float = (
+        sum(all_scores) / len(all_scores) if all_scores else 0
+    )
     print(f"Average score: {average_score:.1f}")
-
     # Top performer (dict comprehension + max)
     player_stats: dict[str, tuple[int, int]] = {
         player_name: (
             player_data["total_score"],
-            player_data["achievements_count"],
+            len(player_data["achievements"]),
         )
         for player_name, player_data in data["players"].items()
     }
-    top_player_name: str = max(
-        player_stats.keys(),
-        key=lambda player_name: player_stats[player_name][0],
+    top_score: str = max(
+        player_stats[player_name][0]
+        for player_name in player_stats.keys()
+    )
+    top_player_name = next(
+        player_name
+        for player_name in player_stats
+        if player_stats[player_name][0] == top_score
     )
     top_score, top_achievements = player_stats[top_player_name]
     print(
@@ -135,48 +145,86 @@ def combined_analysis(data: dict) -> None:
 def main():
     data = {
         "players": {
-            "alice": {
-                "level": 41,
-                "total_score": 2824,
-                "sessions_played": 13,
-                "favorite_mode": "ranked",
-                "achievements_count": 5,
-            },
-            "bob": {
-                "level": 16,
-                "total_score": 4657,
-                "sessions_played": 27,
-                "favorite_mode": "ranked",
-                "achievements_count": 2,
-            },
-            "charlie": {
-                "level": 44,
-                "total_score": 9935,
-                "sessions_played": 21,
-                "favorite_mode": "ranked",
-                "achievements_count": 7,
-            },
-            "diana": {
-                "level": 3,
-                "total_score": 1488,
-                "sessions_played": 21,
-                "favorite_mode": "casual",
-                "achievements_count": 4,
-            },
-            "eve": {
-                "level": 33,
-                "total_score": 1434,
-                "sessions_played": 81,
-                "favorite_mode": "casual",
-                "achievements_count": 7,
-            },
-            "frank": {
-                "level": 15,
-                "total_score": 8359,
-                "sessions_played": 85,
-                "favorite_mode": "competitive",
-                "achievements_count": 1,
-            },
+            "alice":
+                {
+                    "level": 41,
+                    "total_score": 2824,
+                    "sessions_played": 13,
+                    "favorite_mode": "ranked",
+                    "achievements":
+                    [
+                        "first_blood",
+                        "level_master",
+                        "speed_runner",
+                        "boss_hunter",
+                        "pixel_perfect",
+                    ],
+                },
+            "bob":
+                {
+                    "level": 16,
+                    "total_score": 4657,
+                    "sessions_played": 27,
+                    "favorite_mode": "ranked",
+                    "achievements":
+                    [
+                        "first_blood",
+                        "combo_king",
+                        "explorer",
+                    ],
+                },
+            "charlie":
+                {
+                    "level": 44,
+                    "total_score": 9935,
+                    "sessions_played": 21,
+                    "favorite_mode": "ranked",
+                    "achievements":
+                    [
+                        "first_blood",
+                        "level_master",
+                        "speed_runner",
+                        "treasure_seeker",
+                        "boss_hunter",
+                        "pixel_perfect",
+                        "combo_king",
+                        "explorer",
+                    ],
+                },
+            "diana":
+                {
+                    "level": 3,
+                    "total_score": 1488,
+                    "sessions_played": 21,
+                    "favorite_mode": "casual",
+                    "achievements":
+                    [
+                        "first_blood",
+                        "level_master",
+                        "speed_runner",
+                        "combo_king",
+                        "explorer",
+                    ],
+                },
+            "eve":
+                {
+                    "level": 33,
+                    "total_score": 1434,
+                    "sessions_played": 81,
+                    "favorite_mode": "casual",
+                    "achievements_count": 7,
+                    "achievements":
+                    [
+                        "first_blood",
+                        "level_master",
+                        "speed_runner",
+                        "treasure_seeker",
+                        "boss_hunter",
+                        "pixel_perfect",
+                        "combo_king",
+                        "explorer",
+                    ],
+                },
         },
         "sessions": [
             {
@@ -222,13 +270,6 @@ def main():
                 "completed": True,
             },
             {
-                "player": "frank",
-                "duration_minutes": 34,
-                "score": 1285,
-                "mode": "casual",
-                "completed": True,
-            },
-            {
                 "player": "alice",
                 "duration_minutes": 53,
                 "score": 1238,
@@ -243,13 +284,6 @@ def main():
                 "completed": False,
             },
             {
-                "player": "frank",
-                "duration_minutes": 92,
-                "score": 2754,
-                "mode": "casual",
-                "completed": True,
-            },
-            {
                 "player": "eve",
                 "duration_minutes": 98,
                 "score": 1102,
@@ -261,13 +295,6 @@ def main():
                 "duration_minutes": 39,
                 "score": 2721,
                 "mode": "ranked",
-                "completed": True,
-            },
-            {
-                "player": "frank",
-                "duration_minutes": 46,
-                "score": 329,
-                "mode": "casual",
                 "completed": True,
             },
             {
@@ -298,13 +325,7 @@ def main():
                 "mode": "ranked",
                 "completed": False,
             },
-            {
-                "player": "frank",
-                "duration_minutes": 79,
-                "score": 1854,
-                "mode": "ranked",
-                "completed": False,
-            },
+
             {
                 "player": "charlie",
                 "duration_minutes": 33,
@@ -320,13 +341,6 @@ def main():
                 "completed": True,
             },
             {
-                "player": "frank",
-                "duration_minutes": 25,
-                "score": 2887,
-                "mode": "competitive",
-                "completed": True,
-            },
-            {
                 "player": "diana",
                 "duration_minutes": 53,
                 "score": 2540,
@@ -339,13 +353,6 @@ def main():
                 "score": 147,
                 "mode": "ranked",
                 "completed": True,
-            },
-            {
-                "player": "frank",
-                "duration_minutes": 118,
-                "score": 2299,
-                "mode": "competitive",
-                "completed": False,
             },
             {
                 "player": "alice",
@@ -389,17 +396,6 @@ def main():
                 "mode": "casual",
                 "completed": True,
             },
-        ],
-        "game_modes": ["casual", "competitive", "ranked"],
-        "achievements": [
-            "first_blood",
-            "level_master",
-            "speed_runner",
-            "treasure_seeker",
-            "boss_hunter",
-            "pixel_perfect",
-            "combo_king",
-            "explorer",
         ],
     }
     print("=== Game Analytics Dashboard ===\n")

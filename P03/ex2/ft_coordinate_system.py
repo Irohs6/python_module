@@ -90,9 +90,6 @@ def main():
         print(f"Distance between {origin} and {pos_one}: {distance:.2f}\n")
 
         print("Unpacking demonstration:")
-        x: int
-        y: int
-        z: int
         x, y, z = pos_one
         print(f"Player at x={x}, y={y}, z={z}")
         print(f"Coordinates: X={x}, Y={y}, Z={z}\n")

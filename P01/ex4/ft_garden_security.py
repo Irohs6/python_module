@@ -3,7 +3,7 @@
 class SecurePlant:
     def __init__(self, name: str, height: int, age: int):
         self.name = name.capitalize()
-        self.__height = height
+        self.__height = self.set_height(height)
         self.__age = age
 
     def get_height(self):

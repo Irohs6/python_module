@@ -495,7 +495,7 @@ class DataStream(ABC):
     def filter_data(self, data_batch: List[Any], 
                     criteria: Optional[str] = None) -> List[Any]:
         """Filter data based on criteria (can be overridden)"""
-        return data_batch
+        return data_batch  
     
     def get_stats(self) -> Dict[str, Union[str, int, float]]:
         """Return stream statistics (can be overridden)"""
