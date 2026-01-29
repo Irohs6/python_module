@@ -3,7 +3,7 @@
 import sys
 
 
-def process_command_line():
+def process_command_line() -> None:
     """Process command line arguments and display them."""
     print("=== Command Quest ===")
     args = sys.argv

@@ -36,17 +36,23 @@ class SensorStream(DataStream):
         super().__init__(stream_id)
 
     def process_batch(self, data_batch: List[Any]) -> str:
-
-        pass
+        if not isinstance(data_batch, List):
+            raise TypeError("invalid type")
 
 
 class TransactionStream(DataStream):
+    def __init__(self, stream_id):
+        super().__init__(stream_id)
+
     def process_batch(self, data_batch: List[Any]) -> str:
 
         pass
 
 
 class EventStream(DataStream):
+    def __init__(self, stream_id):
+        super().__init__(stream_id)
+
     def process_batch(self, data_batch: List[Any]) -> str:
 
         pass
@@ -62,6 +68,7 @@ class StreamProcessor:
         self.streams.append(stream)
 
     def process_all_streams(self, data_dict: Dict[str, List]) -> List[str]:
-
+        for stream in self.streams:
+            stream.process_batch(data_dict)
         pass
 

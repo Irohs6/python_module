@@ -33,8 +33,8 @@ def parse_inventory(args: list[str]) -> dict[str, int]:
             item, qty_str = arg.split(":", 1)
             quantity: int = int(qty_str)
 
-            if quantity < 0:
-                print(f"Warning: negative quantity for '{item}', ignored")
+            if quantity <= 0:
+                print(f"Warning: invalid quantity for '{item}', ignored")
                 continue
 
             inventory[item] = quantity

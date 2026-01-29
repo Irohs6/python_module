@@ -3,7 +3,7 @@
 import sys
 
 
-def parse_scores(args: list[str]) -> list[str]:
+def parse_scores(args: list[str]) -> list[int]:
     """Parse command line arguments to extract scores."""
     scores: list = []
     for arg in args:
@@ -16,7 +16,7 @@ def parse_scores(args: list[str]) -> list[str]:
     return scores
 
 
-def compute_stats(scores: list[str]) -> dict[str]:
+def compute_stats(scores: list[str]) -> dict[str, int | float]:
     total_player: int = len(scores)
     total_score: int = sum(scores)
     average: float = total_score / total_player

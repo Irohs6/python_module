@@ -83,7 +83,7 @@ def demonstrate_set_comprehensions(data: dict) -> None:
             for player in data["players"].values()
             for achievement in player["achievements"]
         }
-    print(f"Unique achivements: {unique_achievements}")
+    print(f"Unique achievements: {unique_achievements}")
 
     # Joueurs ayant participé à des sessions
     active_session_players: set[str] = {
