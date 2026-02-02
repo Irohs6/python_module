@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
 
+
 class Plant:
+    """Represent a plant with basic printable information."""
     def __init__(self, name: str, height: int, age: int):
+        """Initialize a plant.
+
+        Args:
+            name: Plant name.
+            height: Height in centimeters.
+            age: Age in days.
+        """
         self.name = name.capitalize()
         self.height = height
         self.age = age
 
     def get_info(self):
+        """Return a compact description of the plant."""
         return (f"{self.name} ({self.height}cm, {self.age} days)")
-
-    def grow(self):
-        self.height = self.height + 1
-        self.age = self.age + 1
 
 
 if __name__ == "__main__":

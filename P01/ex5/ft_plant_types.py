@@ -1,24 +1,37 @@
 #!/usr/bin/env python3
 
+
 class Plant:
+    """Base plant with name, height, and age."""
     def __init__(self, name: str, height: int, age: int):
+        """Initialize a base plant.
+
+        Args:
+            name: Plant name.
+            height: Height in centimeters.
+            age: Age in days.
+        """
         self.name = name.capitalize()
         self.height = height
         self.age = age
 
     def get_info(self):
+        """Return a one-line summary of the plant."""
         return (f"{self.name}: {self.height}cm {self.age} days old")
 
 
 class Flower(Plant):
+    """A flowering plant with a color attribute."""
     def __init__(self, name: str, height: int, age: int, color: str):
         super().__init__(name, height, age)
         self.color = color
 
     def bloom(self):
+        """Print a message indicating the plant is blooming."""
         print(f"{self.name} is blooming beautifully!\n")
 
     def get_info(self):
+        """Return detailed information including color."""
         return (
             f"{self.name} (Flower): "
             f"{self.height}cm, "
@@ -28,14 +41,17 @@ class Flower(Plant):
 
 
 class Tree(Plant):
+    """A tree with an additional trunk diameter attribute."""
     def __init__(self, name: str, height: int, age: int, trunk_diameter: int):
         super().__init__(name, height, age)
         self.diam = trunk_diameter
 
     def produce_shade(self):
+        """Print an estimate of shade area produced by the tree."""
         print(f"{self.name} provides {self.diam * 2} square meters of shade\n")
 
     def get_info(self):
+        """Return detailed information including trunk diameter."""
         return (
             f"{self.name} (Tree): "
             f"{self.height}cm, "
@@ -45,6 +61,7 @@ class Tree(Plant):
 
 
 class Vegetable(Plant):
+    """An edible plant with harvest season and nutrition info."""
     def __init__(
             self,
             name: str,
@@ -58,11 +75,13 @@ class Vegetable(Plant):
         self.nutri_val = nutritional_value
 
     def get_nutri(self):
+        """Return a sentence describing nutritional value."""
         return (
             f"{self.name} is rich in {self.nutri_val}\n"
         )
 
     def get_info(self):
+        """Return detailed information including harvest season."""
         return (
             f"{self.name} (Vegetable): "
             f"{self.height}cm, "

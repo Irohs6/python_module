@@ -51,4 +51,3 @@ if __name__ == "__main__":
     print(f"Alice vs Bob common: {alice_success.intersection(bob_success)}")
     print(f"Alice unique: {alice_success.difference(bob_success)}")
     print(f"Bob unique: {bob_success.difference(alice_success)}")
-
