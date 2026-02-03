@@ -2,7 +2,6 @@
 
 
 from abc import ABC, abstractmethod
-from encodings.punycode import T
 from typing import Any, Dict, Union, List, Optional
 
 
@@ -31,25 +30,44 @@ class DataStream(ABC):
             "data_processed": self.data_processed,
         }
 
-# sensor_result = sensor.process_batch(["temp:22.5", "humidity:65", "pressure:1013"])
-
 
 class SensorStream(DataStream):
+
     def __init__(self, stream_id):
         super().__init__(stream_id)
 
+    def filter_data(self, data_batch, criteria=None):
+        if criteria == "temp":
+            return [data for data in data_batch if data.startswith("temp")]
+        elif criteria == "humidity":
+            return [data for data in data_batch if data.startswith("humidity")]
+        return data_batch
+
     def process_batch(self, data_batch: List[Any]) -> str:
+
         if not isinstance(data_batch, list):
             raise TypeError("invalid type")
-        else:
-            self.data_processed += 1
-            return (f"Stream ID: {self.stream_id}, Type: Environemental Data\n"
-                    f"Processing sensor batch: {data_batch}\n"
-                    f"Sensor analysis: {len(data_batch)} reading processed,"
-                    f"avg temp: {data_batch[0]}")
+
+        self.data_processed += len(data_batch)
+
+        temps = [
+            float(data.split(":")[1])
+            for data in data_batch
+            if data.startswith("temp")
+        ]
+
+        if not temps:
+            return "No temperature data to process"
+
+        avg_temp = sum(temps) / len(temps)
+        return (f"Stream ID: {self.stream_id}, Type: Environemental Data\n"
+                f"Processing sensor batch: {data_batch}\n"
+                f"Sensor analysis: {len(data_batch)} reading processed,"
+                f"avg temp: {avg_temp}")
 
 
 class TransactionStream(DataStream):
+
     def __init__(self, stream_id):
         super().__init__(stream_id)
 
@@ -72,10 +90,10 @@ class TransactionStream(DataStream):
                 else:
                     raise ValueError(f"unknown operation type: {op_type}")
 
-                if total_value > 0:
-                    msg = f"net flow: +{total_value} units"
-                else:
-                    msg = f"deficit flow: {total_value} units"
+            if total_value > 0:
+                msg = f"net flow: +{total_value} units"
+            else:
+                msg = f"deficit flow: {total_value} units"
             return (f"Stream ID: {self.stream_id}, Type: Financial Data\n"
                     f"Processing transaction batch:: {data_batch}\n"
                     f"Transaction analysis:  {len(data_batch)}  operations, "
@@ -111,9 +129,11 @@ class StreamProcessor:
         self.streams.append(stream)
 
     def process_all_streams(self, data_dict: Dict[str, List]) -> List[str]:
+        results = []
         for stream in self.streams:
-            stream.process_batch(data_dict)
-        pass
+            if stream.stream_id in data_dict:
+                results.append(stream.process_batch(data_dict[stream.stream_id]))
+        return results
 
 
 if __name__ == "__main__":
@@ -121,22 +141,22 @@ if __name__ == "__main__":
     print("=== SENSOR STREAM ===")
     sensor = SensorStream("SENSOR_001")
     sensor_result = sensor.process_batch(["temp:22.5", "humidity:65", "pressure:1013"])
-    print(f"Result: {sensor_result}")
-    print(f"Stats: {sensor.get_stats()}\n")
+    #print(f"Stats: {sensor.get_stats()}\n")
+    print(f"{sensor_result}")
 
     # Test TransactionStream
     print("=== TRANSACTION STREAM ===")
     trans = TransactionStream("TRANS_001")
     trans_result = trans.process_batch(["buy:100", "sell:150", "buy:75"])
-    print(f"Result: {trans_result}")
-    print(f"Stats: {trans.get_stats()}\n")
+    print(f"{trans_result}")
+    #print(f"Stats: {trans.get_stats()}\n")
 
     # Test EventStream
     print("=== EVENT STREAM ===")
     events = EventStream("EVENT_001")
     events_result = events.process_batch(["login", "error", "logout"])
-    print(f"Result: {events_result}")
-    print(f"Stats: {events.get_stats()}\n")
+    print(f"{events_result}")
+    #print(f"Stats: {events.get_stats()}\n")
 
     # Test StreamProcessor
     print("=== STREAM PROCESSOR ===")
