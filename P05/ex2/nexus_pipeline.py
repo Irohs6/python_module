@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from typing import Any, List, Dict, Union, Protocol, Optional
-from collections import deque
 
 
 # ============================================================================
@@ -287,27 +286,27 @@ class NexusManager:
 
 
 # ============================================================================
-# DONNÉES DE TEST
-# ============================================================================
-
-# Test data for JSON adapter
-TEST_JSON_DATA = {"sensor": "temp", "value": 23.5, "unit": "C"}
-
-# Test data for CSV adapter
-TEST_CSV_DATA = "user,action,timestamp"
-
-# Test data for Stream adapter
-TEST_STREAM_DATA = [22.1, 22.3, 22.0, 22.5, 21.9]  # Real-time sensor readings
-
-# Test data for pipeline chaining
-TEST_CHAIN_DATA = {"records": 100, "source": "raw_data", "format": "mixed"}
-
-
-# ============================================================================
 # MAIN - DÉMONSTRATION
 # ============================================================================
 
 if __name__ == "__main__":
+
+    # ============================================================================
+    # DONNÉES DE TEST
+    # ============================================================================
+
+    # Test data for JSON adapter
+    TEST_JSON_DATA = {"sensor": "temp", "value": 23.5, "unit": "C"}
+
+    # Test data for CSV adapter
+    TEST_CSV_DATA = "user,action,timestamp"
+
+    # Test data for Stream adapter
+    TEST_STREAM_DATA = [22.1, 22.3, 22.0, 22.5, 21.9]  # Real-time sensor readings
+
+    # Test data for pipeline chaining
+    TEST_CHAIN_DATA = {"records": 100, "source": "raw_data", "format": "mixed"}
+
     # ========================================================================
     # INITIALISATION
     # ========================================================================
