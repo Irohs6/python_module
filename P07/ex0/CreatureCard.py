@@ -3,59 +3,45 @@ from .Card import Card
 
 
 class CreatureCard(Card):
-    def __init__(self, name, cost, rarity, attack: int, health: int):
+    """A creature card with attack and health attributes."""
+
+    def __init__(
+        self, name: str, cost: int, rarity: str,
+        attack: int, health: int
+    ) -> None:
+        """Initialize a creature card."""
         super().__init__(name, cost, rarity)
-        self.set_attack(attack)
-        self.set_health(health)
-
-    def set_attack(self, attack):
-        if not isinstance(attack, int):
-            raise ValueError(f"{attack} positive interger required")
-        if attack < 0:
-            raise ValueError(f"Error {attack}  < 0")
-        else:
-            self.__attack = attack
-
-    def get_attack(self):
-        return self.__attack
-
-    def set_health(self, health):
-        if not isinstance(health, int):
-            raise ValueError(f"{health} positive interger required")
-        if health < 0:
-            raise ValueError(f"Error {health}  < 0")
-        else:
-            self.__health = health
-
-    def get_health(self):
-        return self.__health
-
-    def is_playable(self, avaiable_mana: int) -> bool:
-        if self.cost < avaiable_mana:
-            return False
-        else:
-            return True
+        if not isinstance(attack, int) or attack < 0:
+            raise ValueError("attack must be a positive integer")
+        if not isinstance(health, int) or health < 0:
+            raise ValueError("health must be a positive integer")
+        self.attack = attack
+        self.health = health
 
     def play(self, game_state: dict) -> dict:
-        if not isinstance(game_state, dict):
-            raise AttributeError(f"{game_state} is not a dict")
-        else:
-            return {
-                "card_played": self.name,
-                "mana_used": self.cost,
-                "effect": "Creature summoned to battlefield"
-            }
-
-    def attack_target(self, target) -> dict:
+        """Play the creature card onto the battlefield."""
         return {
-            "attacker": self.name,
-            "target": target.name if hasattr(target, 'name') else str(target),
-            "damage_dealt": self.attack,
-            "combat_resolved": True
+            'card_played': self.name,
+            'mana_used': self.cost,
+            'effect': 'Creature summoned to battlefield'
         }
 
-    def get_card_info(self):
-        info: dict = super().get_card_info()
-        info["attack"] = self.get_attack()
-        info["health"] = self.get_health()
+    def get_card_info(self) -> dict:
+        """Return creature card info including attack and health."""
+        info = super().get_card_info()
+        info['type'] = 'Creature'
+        info['attack'] = self.attack
+        info['health'] = self.health
         return info
+
+    def attack_target(self, target: object) -> dict:
+        """Attack a target, dealing damage equal to attack value."""
+        target_name = (
+            target.name if hasattr(target, 'name') else str(target)
+        )
+        return {
+            'attacker': self.name,
+            'target': target_name,
+            'damage_dealt': self.attack,
+            'combat_resolved': True
+        }
