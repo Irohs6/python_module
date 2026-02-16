@@ -12,7 +12,7 @@ if __name__ == "__main__":
     print("alchemy.elements.create_earth():", alchemy.elements.create_earth())
     print("alchemy.elements.create_air():", alchemy.elements.create_air())
 
-    print("\n Testing package-level access (controlled by __init__.py):")
+    print("\nTesting package-level access (controlled by __init__.py):")
     print("alchemy.create_fire():", alchemy.create_fire())
     print("alchemy.create_water():", alchemy.create_water())
 
