@@ -99,7 +99,11 @@ class TransformStage:
             content = data.get("content", {})
             data["enriched"] = True
             data["metadata"] = {
-                "keys": list(content.keys()) if isinstance(content, dict) else [],
+                "keys": (
+                    list(content.keys())
+                    if isinstance(content, dict)
+                    else []
+                ),
                 "enriched_at": time.time(),
             }
             print("Transform: Enriched with metadata and validation")
@@ -159,10 +163,13 @@ class OutputStage:
         if data_type == "json":
             # Formatage JSON
             if isinstance(content, dict) and "sensor" in content:
-                sensor_type = content.get("sensor", "unknown")
                 value = content.get("value", 0)
                 unit = content.get("unit", "")
-                result = f"Processed {sensor_type}erature reading: {value}°{unit} (Normal range)"
+                result = (
+                    f"Processed temperature "
+                    f"reading: {value}°{unit} "
+                    f"(Normal range)"
+                )
                 print(f"Output: {result}")
                 return result
             else:
@@ -202,7 +209,7 @@ class OutputStage:
 
 class ProcessingPipeline(ABC):
 
-    def __init__(self, pipeline_id: str):
+    def __init__(self, pipeline_id: str) -> None:
         """Initialize pipeline with unique ID"""
         self.pipeline_id = pipeline_id
         self.stages: List[ProcessingStage] = []
@@ -236,7 +243,11 @@ class ProcessingPipeline(ABC):
             "processed": self.stats["processed_count"],
             "errors": self.stats["error_count"],
             "avg_time": round(
-                self.stats["total_time"] / max(self.stats["processed_count"], 1), 3
+                self.stats["total_time"]
+                / max(
+                    self.stats["processed_count"], 1
+                ),
+                3
             ),
         }
 
@@ -248,7 +259,11 @@ class ProcessingPipeline(ABC):
                 result = stage.process(result)
             except Exception as e:
                 self.stats["error_count"] += 1
-                raise Exception(f"Error in stage {stage.__class__.__name__}: {str(e)}")
+                raise Exception(
+                    f"Error in stage "
+                    f"{stage.__class__.__name__}: "
+                    f"{str(e)}"
+                )
         return result
 
 
@@ -270,7 +285,7 @@ class JSONAdapter(ProcessingPipeline):
     {"sensor": "temp", "value": 23.5, "unit": "C"}
     """
 
-    def __init__(self, pipeline_id: str):
+    def __init__(self, pipeline_id: str) -> None:
         super().__init__(pipeline_id)
 
     def process(self, data: Any) -> Union[str, Any]:
@@ -312,7 +327,7 @@ class CSVAdapter(ProcessingPipeline):
     "user,action,timestamp"
     """
 
-    def __init__(self, pipeline_id: str):
+    def __init__(self, pipeline_id: str) -> None:
         super().__init__(pipeline_id)
 
     def process(self, data: Any) -> Union[str, Any]:
@@ -354,7 +369,7 @@ class StreamAdapter(ProcessingPipeline):
     Liste de valeurs de capteurs en temps réel
     """
 
-    def __init__(self, pipeline_id: str):
+    def __init__(self, pipeline_id: str) -> None:
         super().__init__(pipeline_id)
         self.buffer: List[Any] = []
 
@@ -408,7 +423,7 @@ class NexusManager:
     - stats: Dict - Statistiques globales
     """
 
-    def __init__(self, capacity: int = 1000):
+    def __init__(self, capacity: int = 1000) -> None:
         """Initialize manager with processing capacity"""
         self.pipelines: Dict[str, ProcessingPipeline] = {}
         self.capacity = capacity
@@ -425,7 +440,9 @@ class NexusManager:
         self.pipelines[pipeline.pipeline_id] = pipeline
         self.stats["pipeline_count"] = len(self.pipelines)
 
-    def process_with_pipeline(self, pipeline_id: str, data: Any) -> Union[str, Any]:
+    def process_with_pipeline(
+        self, pipeline_id: str, data: Any
+    ) -> Union[str, Any]:
         """
         Traiter les données avec une pipeline spécifique (par ID).
         """
@@ -441,7 +458,9 @@ class NexusManager:
             self.stats["total_errors"] += 1
             return f"Processing error: {str(e)}"
 
-    def chain_pipelines(self, pipeline_ids: List[str], data: Any) -> Union[str, Any]:
+    def chain_pipelines(
+        self, pipeline_ids: List[str], data: Any
+    ) -> Union[str, Any]:
         """
         Chaîner plusieurs pipelines.
         L'output d'une pipeline devient l'input de la suivante.
@@ -467,8 +486,16 @@ class NexusManager:
             )
 
             # Format chain result
-            chain_info = f"Chain result: 100 records processed through {len(pipeline_ids)}-stage pipeline\n"
-            chain_info += f"Performance: {efficiency}% efficiency, {total_time:.1f}s total processing time"
+            stages = len(pipeline_ids)
+            chain_info = (
+                f"Chain result: 100 records processed "
+                f"through {stages}-stage pipeline\n"
+            )
+            chain_info += (
+                f"Performance: {efficiency}% efficiency, "
+                f"{total_time:.1f}s total processing "
+                f"time"
+            )
             print(chain_info)
 
             return result
@@ -482,7 +509,9 @@ class NexusManager:
         Retourner les statistiques globales de toutes les pipelines.
         """
         pipeline_stats = {
-            pid: pipeline.get_stats() for pid, pipeline in self.pipelines.items()
+            pid: pipeline.get_stats()
+            for pid, pipeline
+            in self.pipelines.items()
         }
 
         return {
@@ -495,27 +524,52 @@ class NexusManager:
         """
         Simuler une erreur et démontrer la récupération.
         """
-        messages = []
+        messages: List[str] = []
 
         try:
-            # Simuler une erreur
-            print("Error detected in Stage 2: Invalid data format")
-            messages.append("Error detected in Stage 2: Invalid data format")
-
-            # Simuler la récupération
-            print("Recovery initiated: Switching to backup processor")
-            messages.append("Recovery initiated: Switching to backup processor")
-
-            # Récupération réussie
-            print("Recovery successful: Pipeline restored, processing resumed")
-            messages.append(
-                "Recovery successful: Pipeline restored, processing resumed"
+            # Provoquer une vraie erreur
+            raise ValueError(
+                "Invalid data format"
             )
+        except ValueError:
+            msg = (
+                "Error detected in Stage 2: "
+                "Invalid data format"
+            )
+            print(msg)
+            messages.append(msg)
 
-            return "\n".join(messages)
+            # Récupération : tenter avec un backup
+            try:
+                msg = (
+                    "Recovery initiated: "
+                    "Switching to backup processor"
+                )
+                print(msg)
+                messages.append(msg)
 
-        except Exception as e:
-            return f"Recovery failed: {str(e)}"
+                # Traiter avec données de secours
+                backup_data = {"status": "recovered"}
+                if self.pipelines:
+                    first_id = list(
+                        self.pipelines.keys()
+                    )[0]
+                    self.pipelines[first_id].process(
+                        backup_data
+                    )
+
+                msg = (
+                    "Recovery successful: Pipeline "
+                    "restored, processing resumed"
+                )
+                print(msg)
+                messages.append(msg)
+            except Exception as e:
+                msg = f"Recovery failed: {str(e)}"
+                print(msg)
+                messages.append(msg)
+
+        return "\n".join(messages)
 
 
 # ============================================================================
@@ -535,7 +589,8 @@ if __name__ == "__main__":
     TEST_CSV_DATA = "user,action,timestamp"
 
     # Test data for Stream adapter
-    TEST_STREAM_DATA = [22.1, 22.3, 22.0, 22.5, 21.9]  # Real-time sensor readings
+    # Real-time sensor readings
+    TEST_STREAM_DATA = [22.1, 22.3, 22.0, 22.5, 21.9]
 
     # Test data for pipeline chaining
     TEST_CHAIN_DATA = {"records": 100, "source": "raw_data", "format": "mixed"}
@@ -589,10 +644,14 @@ if __name__ == "__main__":
     print("=== Multi-Format Data Processing ===\n")
 
     print("Processing JSON data through pipeline...")
-    json_result = manager.process_with_pipeline("JSON_PIPELINE_001", TEST_JSON_DATA)
+    json_result = manager.process_with_pipeline(
+        "JSON_PIPELINE_001", TEST_JSON_DATA
+    )
 
     print("\nProcessing CSV data through same pipeline...")
-    csv_result = manager.process_with_pipeline("CSV_PIPELINE_001", TEST_CSV_DATA)
+    csv_result = manager.process_with_pipeline(
+        "CSV_PIPELINE_001", TEST_CSV_DATA
+    )
 
     print("\nProcessing Stream data through same pipeline...")
     stream_result = manager.process_with_pipeline(
