@@ -122,7 +122,6 @@ class FantasyCardFactory(CardFactory):
         return deck
 
     # ---- Supported types ----
-
     def get_supported_types(self) -> dict:
         """Return supported card types and their options."""
         return {
@@ -130,4 +129,3 @@ class FantasyCardFactory(CardFactory):
             "spells": list(self.SPELLS.keys()),
             "artifacts": list(self.ARTIFACTS.keys()),
         }
-

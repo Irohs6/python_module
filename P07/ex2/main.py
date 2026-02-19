@@ -17,14 +17,15 @@ def main() -> None:
     print("EliteCard capabilities:")
     for name, cls in interfaces.items():
         methods = [
-            m for m in dir(cls) if not m.startswith("_") and callable(getattr(cls, m))
+            m for m in dir(cls) if not m.startswith("_") and
+            callable(getattr(cls, m))
         ]
         print(f"- {name}: {methods}")
 
-    warrior = EliteCard("Arcane Warrior", 6, "Legendary", 5, 3, 4)
+    warrior = EliteCard("Arcane Warrior", 6, "Legendary", 5, 3, 10)
 
     print(f"\nPlaying {warrior.name} (Elite Card):")
-    warrior.play({"mana": 10})
+    warrior.play({"mana": 2})
 
     print("\nCombat phase:")
     attack_result = warrior.attack("Enemy")
