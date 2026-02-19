@@ -32,12 +32,12 @@ class InputStage:
     - Retourner les données validées
     """
 
-    def process(self, data: Any) -> Any:
+    def process(self, data: Any) -> Dict:
         """Validate and parse incoming data"""
         # Validation et structuration des données
         if isinstance(data, dict):
             # JSON data validation
-            validated = {
+            validated: dict = {
                 "type": "json",
                 "content": data,
                 "validated": True,
@@ -86,7 +86,7 @@ class TransformStage:
     - Retourner les données enrichies
     """
 
-    def process(self, data: Any) -> Any:
+    def process(self, data: Any) -> Dict:
         """Transform and enrich data with metadata"""
         if not isinstance(data, dict):
             data = {"content": data}
@@ -97,12 +97,10 @@ class TransformStage:
         if data_type == "json":
             # Enrichissement JSON
             content = data.get("content", {})
-            data["enriched"] = True
+
             data["metadata"] = {
                 "keys": (
-                    list(content.keys())
-                    if isinstance(content, dict)
-                    else []
+                    list(content.keys()) if isinstance(content, dict) else []
                 ),
                 "enriched_at": time.time(),
             }
@@ -244,10 +242,8 @@ class ProcessingPipeline(ABC):
             "errors": self.stats["error_count"],
             "avg_time": round(
                 self.stats["total_time"]
-                / max(
-                    self.stats["processed_count"], 1
-                ),
-                3
+                / max(self.stats["processed_count"], 1),
+                3,
             ),
         }
 
@@ -510,8 +506,7 @@ class NexusManager:
         """
         pipeline_stats = {
             pid: pipeline.get_stats()
-            for pid, pipeline
-            in self.pipelines.items()
+            for pid, pipeline in self.pipelines.items()
         }
 
         return {
@@ -528,35 +523,23 @@ class NexusManager:
 
         try:
             # Provoquer une vraie erreur
-            raise ValueError(
-                "Invalid data format"
-            )
+            raise ValueError("Invalid data format")
         except ValueError:
-            msg = (
-                "Error detected in Stage 2: "
-                "Invalid data format"
-            )
+            msg = "Error detected in Stage 2: " "Invalid data format"
             print(msg)
             messages.append(msg)
 
             # Récupération : tenter avec un backup
             try:
-                msg = (
-                    "Recovery initiated: "
-                    "Switching to backup processor"
-                )
+                msg = "Recovery initiated: " "Switching to backup processor"
                 print(msg)
                 messages.append(msg)
 
                 # Traiter avec données de secours
                 backup_data = {"status": "recovered"}
                 if self.pipelines:
-                    first_id = list(
-                        self.pipelines.keys()
-                    )[0]
-                    self.pipelines[first_id].process(
-                        backup_data
-                    )
+                    first_id = list(self.pipelines.keys())[0]
+                    self.pipelines[first_id].process(backup_data)
 
                 msg = (
                     "Recovery successful: Pipeline "
@@ -669,6 +652,18 @@ if __name__ == "__main__":
         ["JSON_PIPELINE_001", "CSV_PIPELINE_001", "STREAM_PIPELINE_001"],
         TEST_CHAIN_DATA,
     )
+    # chain_result: str | Any
+
+    # chain_result = manager.process_with_pipeline(
+    #     "STREAM_PIPELINE_001",
+    #     manager.process_with_pipeline(
+    #         "CSV_PIPELINE_001",
+    #         manager.process_with_pipeline(
+    #             "JSON_PIPELINE_001", TEST_CHAIN_DATA
+    #         ),
+    #     ),
+    # )
+    print(f"\nFinal chain result: {chain_result}")
 
     # ========================================================================
     # ERROR RECOVERY
