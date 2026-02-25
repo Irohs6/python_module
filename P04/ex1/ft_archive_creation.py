@@ -2,6 +2,7 @@
 
 
 def main() -> None:
+    """Creates new_discovery.txt and writes predefined archive entries."""
     print("=== CYBER ARCHIVES - PRESERVATION SYSTEM ===\n")
     print("Initializing new storage unit: new_discovery.txt")
 

@@ -126,7 +126,7 @@ def combined_analysis(data: dict) -> None:
         )
         for player_name, player_data in data["players"].items()
     }
-    top_score: str = max(
+    top_score: int = max(
         player_stats[player_name][0]
         for player_name in player_stats.keys()
     )

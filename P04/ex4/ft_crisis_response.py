@@ -2,6 +2,8 @@
 
 
 def crisis_handler(filename: str, mode: str) -> None:
+    """Attempts to open a file and handles FileNotFoundError,
+        PermissionError and unexpected exceptions."""
     try:
         if mode == "crisis":
             print(f"CRISIS ALERT: Attempting access to '{filename}'...")
@@ -9,7 +11,7 @@ def crisis_handler(filename: str, mode: str) -> None:
             print(f"ROUTINE ACCESS: Attempting access to '{filename}'...")
 
         with open(filename, "r") as file:
-            content = file.read().strip()
+            content = file.read()
             print(f"SUCCESS: Archive recovered - ``{content}''")
             print("STATUS: Normal operations resumed")
 
@@ -27,7 +29,9 @@ def crisis_handler(filename: str, mode: str) -> None:
 
 
 def main() -> None:
-    print("=== CYBER ARCHIVES - CRISIS RESPONSE SYSTEM ===")
+    """Runs several crisis and routine file
+        access scenarios through crisis_handler."""
+    print("=== CYBER ARCHIVES - CRISIS RESPONSE SYSTEM ===\n")
 
     crisis_handler("lost_archive.txt", "crisis")
     crisis_handler("classified_vault.txt", "crisis")

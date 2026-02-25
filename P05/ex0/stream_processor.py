@@ -36,8 +36,10 @@ class NumericProcessor(DataProcessor):
         """Validate if data is numeric."""
         if not isinstance(data, (list, tuple)):
             raise TypeError("type incorrect")
+
         if not all(isinstance(x, (int, float)) for x in data):
             raise ValueError("List must contain only numbers")
+
         return True
 
 
@@ -54,6 +56,7 @@ class TextProcessor(DataProcessor):
         """Validate if data is text."""
         if not isinstance(data, str):
             raise TypeError("Text data must be a string")
+
         return True
 
 
@@ -62,11 +65,12 @@ class LogProcessor(DataProcessor):
 
     def process(self, data: Any) -> str:
         level, message = data.split(":", 1)
-        level = level.strip()
-        message = message.strip()
+        level = level
+        message = message
 
         if level == "ERROR":
             return f"[ALERT] ERROR level detected: {message}"
+
         return f"[{level}] {level} level detected: {message}"
 
     def validate(self, data: Any) -> bool:
@@ -88,47 +92,52 @@ if __name__ == "__main__":
     processors = [
         (NumericProcessor(), [1, 2, 3, 4, 5]),
         (TextProcessor(), "Hello Nexus World"),
-        (LogProcessor(), "ERROR: Connection timeout"),
+        (LogProcessor(), "ERROR: Connection timeout")
     ]
 
-    for processor, data in processors:
-        try:
-            if isinstance(processor, NumericProcessor):
-                print("\nInitializing Numeric Processor...")
-                print(f'Processing data: {data}')
-            elif isinstance(processor, TextProcessor):
-                print("\nInitializing Text Processor...")
-                print(f'Processing data: "{data}"')
-            elif isinstance(processor, LogProcessor):
-                print("\nInitializing Log Processor...")
-                print(f'Processing data: "{data}"')
-            processor.validate(data)
-            print(f"Validation: "
-                  f"{processor.__class__.__name__[:-9]} "
-                  f"data verified")
-            print(processor.format_output(
-                processor.process(data)
-            ))
-        except Exception as e:
-            print(f"Error: {e}")
+    try:
+        for processor, data in processors:
+            try:
+                if isinstance(processor, NumericProcessor):
+                    print("\nInitializing Numeric Processor...")
+                    print(f'Processing data: {data}')
+                elif isinstance(processor, TextProcessor):
+                    print("\nInitializing Text Processor...")
+                    print(f'Processing data: "{data}"')
+                elif isinstance(processor, LogProcessor):
+                    print("\nInitializing Log Processor...")
+                    print(f'Processing data: "{data}"')
+                processor.validate(data)
+                print(f"Validation: {processor.__class__.__name__[:-9]}"
+                      "data verified")
+                print(processor.format_output(
+                    processor.process(data)
+                ))
+            except Exception as e:
+                print(f"Error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
-    print("\n=== Polymorphic Processing Demo ===")
+    print("\n=== Polymorphic Processing Demo ===\n")
     print("Processing multiple data types "
           "through same interface...")
 
     poly_data = [
         (NumericProcessor(), [1, 2, 3]),
         (TextProcessor(), "Hello Nexus"),
-        (LogProcessor(), "INFO: System ready"),
+        (LogProcessor(), "INFO: System ready")
     ]
 
-    for i, (processor, data) in enumerate(poly_data, 1):
-        try:
-            processor.validate(data)
-            result = processor.process(data)
-            print(f"Result {i}: {result}")
-        except Exception as e:
-            print(f"Error: {e}")
+    try:
+        for i, (processor, data) in enumerate(poly_data, 1):
+            try:
+                processor.validate(data)
+                result = processor.process(data)
+                print(f"Result {i}: {result}")
+            except Exception as e:
+                print(f"Error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
     print("\nFoundation systems online. "
           "Nexus ready for advanced streams.")

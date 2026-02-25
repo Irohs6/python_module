@@ -1,0 +1,7 @@
+# .gitignore pour ex02 - Oracle
+# Ne jamais versionner les fichiers de secrets
+
+.env
+*.pyc
+__pycache__/
+matrix_analysis.png

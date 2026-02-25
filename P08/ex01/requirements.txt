@@ -1,0 +1,2 @@
+# requirements.txt - Dépendances pip pour ex01
+# À compléter

@@ -1,6 +1,6 @@
 """Exercise 0: Card Foundation"""
-from .Card import Card
-from .CreatureCard import CreatureCard
+from ex0.Card import Card
+from ex0.CreatureCard import CreatureCard
 
 
 __all__ = ['Card', 'CreatureCard']

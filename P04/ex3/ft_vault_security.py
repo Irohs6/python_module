@@ -2,6 +2,9 @@
 
 
 def main() -> None:
+    """Opens classified_data.txt for reading and writes to
+        security_protocols.txt."""
+
     print("=== CYBER ARCHIVES - VAULT SECURITY SYSTEM ===\n")
 
     print("Initiating secure vault access...")
@@ -10,15 +13,15 @@ def main() -> None:
             print("Vault connection established with failsafe protocols\n")
             print("SECURE EXTRACTION:")
             content = classified.read()
-            print(content.strip())
+            print(content)
         with open("security_protocols.txt", "w") as security:
             new_protocol = "[CLASSIFIED] New security protocols archived"
-            security.write(new_protocol + "\n")
+            security.write(content)
             print("\nSECURE PRESERVATION:")
             print(new_protocol)
         print("Vault automatically sealed upon completion\n")
-    except FileNotFoundError as e:
-        print(f"Error: {e}")
+    except FileNotFoundError:
+        print("Error: classified_data.txt not found.")
     finally:
         print("All vault operations completed with maximum security.")
 
