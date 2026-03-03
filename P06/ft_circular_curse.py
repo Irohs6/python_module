@@ -17,6 +17,16 @@ if __name__ == "__main__":
     print("record_spell('Dark Magic', 'shadow'):",
           record_spell('Dark Magic', 'shadow'))
 
+    print("\nTesting spell recording with Dependency Injection:")
+    from alchemy.grimoire import (record_spell_dependency_injection,
+                                  validate_ingredients)
+    print("record_spell('Fireball', 'fire air'):",
+          record_spell_dependency_injection('Fireball', 'fire air',
+                                            validate_ingredients))
+    print("record_spell('Dark Magic', 'shadow'):",
+          record_spell_dependency_injection('Dark Magic', 'shadow',
+                                            validate_ingredients))
+
     print("\nTesting late import technique:")
     print("record_spell('Lightning', 'air'):",
           record_spell('Lightning', 'air'))
