@@ -17,10 +17,10 @@ if __name__ == "__main__":
     print("heal():", heal())
 
     print("\nMethod 4 - Multiple imports:")
-    from alchemy.elements import create_fire, create_air
+    from alchemy.elements import create_earth, create_fire
+    print("create_earth():", create_earth())
     print("create_fire():", create_fire())
-    print("create_air():", create_air())
-    from alchemy.potions import wisdom_potion as wis
-    print("\nwisdom_potion():", wis())
+    from alchemy.potions import strength_potion as str_pot
+    print("strength_potion():", str_pot())
 
     print("\nAll import transmutation methods mastered!")

@@ -1,20 +1,35 @@
 #!/usr/bin/env python3
-
+import alchemy
 
 if __name__ == "__main__":
 
     print("=== Sacred Scroll Mastery ===\n")
 
     print("Testing direct module access:")
-    import alchemy.elements
-    print("alchemy.elements.create_fire():", alchemy.elements.create_fire())
-    print("alchemy.elements.create_water():", alchemy.elements.create_water())
-    print("alchemy.elements.create_earth():", alchemy.elements.create_earth())
-    print("alchemy.elements.create_air():", alchemy.elements.create_air())
 
-    print("\nTesting package-level access (controlled by __init__.py):")
-    print("alchemy.create_fire():", alchemy.create_fire())
-    print("alchemy.create_water():", alchemy.create_water())
+    try:
+        print(
+            "alchemy.elements.create_fire():", alchemy.elements.create_fire()
+        )
+        print(
+            "alchemy.elements.create_water():", alchemy.elements.create_water()
+        )
+        print(
+            "alchemy.elements.create_earth():", alchemy.elements.create_earth()
+        )
+        print("alchemy.elements.create_air():", alchemy.elements.create_air())
+    except AttributeError as e:
+        print("AttributeError:", e)
+
+    try:
+        print("\nTesting package-level access (controlled by __init__.py):")
+        print("alchemy.create_fire():", alchemy.create_fire())
+        print("alchemy.create_water():", alchemy.create_water())
+    except AttributeError:
+        print(
+            "alchemy.create_fire()/create_water(): "
+            "AttributeError - not exposed"
+        )
 
     try:
         print("alchemy.create_earth():", alchemy.create_earth())

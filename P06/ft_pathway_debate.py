@@ -16,7 +16,7 @@ if __name__ == "__main__":
     print("elixir_of_life():", elixir_of_life())
 
     print("\nTesting Package Access:")
-    import alchemy
+    import alchemy.transmutation
     print("alchemy.transmutation.lead_to_gold():",
           alchemy.transmutation.lead_to_gold())
     print("alchemy.transmutation.philosophers_stone():",

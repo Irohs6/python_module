@@ -2,6 +2,7 @@ def healing_potion():
     from .elements import create_fire, create_water
     fire_result = create_fire()
     water_result = create_water()
+
     return f"Healing potion brewed with {fire_result} and {water_result}"
 
 
@@ -16,6 +17,7 @@ def invisibility_potion():
     from .elements import create_air, create_water
     air_result = create_air()
     water_result = create_water()
+
     return f"Invisibility potion brewed with {air_result} and {water_result}"
 
 

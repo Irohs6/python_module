@@ -34,7 +34,7 @@ class CreatureCard(Card):
         info['health'] = self.health
         return info
 
-    def attack_target(self, target: object) -> dict:
+    def attack_target(self, target: Card) -> dict:
         """Attack a target, dealing damage equal to attack value."""
         target_name = (
             target.name if hasattr(target, 'name') else str(target)
