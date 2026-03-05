@@ -20,10 +20,24 @@ class CreatureCard(Card):
 
     def play(self, game_state: dict) -> dict:
         """Play the creature card onto the battlefield."""
+        if not self.is_playable(game_state['mana']):
+            return {
+                'is_playable': False,
+                'result':
+                    {
+                        'card': self.name,
+                        'required_mana': self.cost,
+                        'available_mana': game_state['mana']
+                    }
+            }
         return {
-            'card_played': self.name,
-            'mana_used': self.cost,
-            'effect': 'Creature summoned to battlefield'
+            'is_playable': True,
+            'result':
+                {
+                    'card_played': self.name,
+                    'mana_used': self.cost,
+                    'effect': 'Creature summoned to battlefield'
+                }
         }
 
     def get_card_info(self) -> dict:
@@ -34,14 +48,16 @@ class CreatureCard(Card):
         info['health'] = self.health
         return info
 
-    def attack_target(self, target: Card) -> dict:
+    def attack_target(self, target: Card | str) -> dict:
         """Attack a target, dealing damage equal to attack value."""
         target_name = (
-            target.name if hasattr(target, 'name') else str(target)
+            target.name if isinstance(target, Card) else str(target)
         )
+        combat_resolved = (True if isinstance(target, CreatureCard)
+                           and target.health <= self.attack else False)
         return {
             'attacker': self.name,
             'target': target_name,
             'damage_dealt': self.attack,
-            'combat_resolved': True
+            'combat_resolved': combat_resolved
         }

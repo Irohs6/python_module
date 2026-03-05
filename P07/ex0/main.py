@@ -15,9 +15,9 @@ def main() -> None:
     print(dragon.get_card_info())
 
     print("\nPlaying Fire Dragon with 6 mana available:")
-    print(f"Playable: {dragon.is_playable(6)}")
     result = dragon.play({'mana': 6})
-    print(f"Play result: {result}")
+    print('Playable:', result['is_playable'])
+    print(f"Play result: {result['result']}")
 
     goblin = CreatureCard("Goblin Warrior", 2, "Common", 3, 2)
     print(f"\nFire Dragon attacks {goblin.name}:")

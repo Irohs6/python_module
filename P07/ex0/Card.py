@@ -8,6 +8,8 @@ class Card(ABC):
 
     def __init__(self, name: str, cost: int, rarity: str) -> None:
         """Initialize a card with name, cost, and rarity."""
+        if not isinstance(cost, int) or cost < 0:
+            raise ValueError("cost must be a positive integer")
         self.name = name
         self.cost = cost
         self.rarity = rarity
