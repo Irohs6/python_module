@@ -27,11 +27,11 @@ def main() -> None:
     # Simulate turn
     print("\nSimulating aggressive turn...")
     hand = [
-        factory.create_creature('dragon'),
-        factory.create_creature('goblin'),
-        factory.create_spell('lightning'),
+        factory.create_creature('Fire Dragon'),
+        factory.create_creature('Goblin Warrior'),
+        factory.create_spell('Lightning Bolt'),
     ]
-    hand_display = [f"{c.name} ({c.cost})" for c in hand]
+    hand_display = [f"{card.name} ({card.cost})" for card in hand]
     print(f"Hand: {hand_display}")
 
     result = strategy.execute_turn(hand, [])

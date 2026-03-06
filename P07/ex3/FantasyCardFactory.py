@@ -34,16 +34,19 @@ class FantasyCardFactory(CardFactory):
     ) -> CreatureCard:
         """Create a fantasy creature card."""
         if isinstance(name_or_power, str):
-            key = name_or_power.lower()
-            if key in self.CREATURES:
-                name, cost, rarity, attack, health = self.CREATURES[key]
-                return CreatureCard(name, cost, rarity, attack, health)
+            name = name_or_power.lower()
+            cost = random.randint(1, 8)
+            rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
+            attack = random.randint(1, 8)
+            health = random.randint(1, 9)
+            return CreatureCard(name, cost, rarity, attack, health)
 
         elif isinstance(name_or_power, int):
-            name, cost, rarity, _, health = random.choice(
-                list(self.CREATURES.values())
-            )
             attack = name_or_power
+            name = random.choice(["Orc", "Elf", "Troll", "Giant"])
+            cost = random.randint(1, 8)
+            rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
+            health = random.randint(1, 9)
             return CreatureCard(name, cost, rarity, attack, health)
 
         name, cost, rarity, attack, health = random.choice(
@@ -58,16 +61,17 @@ class FantasyCardFactory(CardFactory):
     ) -> SpellCard:
         """Create a fantasy spell card."""
         if isinstance(name_or_power, str):
-            key = name_or_power.lower()
-            if key in self.SPELLS:
-                name, cost, rarity, effect_type = self.SPELLS[key]
-                return SpellCard(name, cost, rarity, effect_type)
+            name = name_or_power.lower()
+            cost = random.randint(1, 5)
+            rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
+            effect_type = random.choice(["damage", "heal", "buff"])
+            return SpellCard(name, cost, rarity, effect_type)
 
         elif isinstance(name_or_power, int):
-            name, _, rarity, effect_type = random.choice(
-                list(self.SPELLS.values())
-            )
             cost = name_or_power
+            name = random.choice(["Fireball", "Heal", "Lightning Bolt"])
+            rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
+            effect_type = random.choice(["damage", "heal", "buff"])
             return SpellCard(name, cost, rarity, effect_type)
 
         name, cost, rarity, effect_type = random.choice(
@@ -82,16 +86,22 @@ class FantasyCardFactory(CardFactory):
     ) -> ArtifactCard:
         """Create a fantasy artifact card."""
         if isinstance(name_or_power, str):
-            key = name_or_power.lower()
-            if key in self.ARTIFACTS:
-                name, cost, rarity, durability, effect = self.ARTIFACTS[key]
-                return ArtifactCard(name, cost, rarity, durability, effect)
+            name = name_or_power.lower()
+            cost = random.randint(1, 5)
+            rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
+            durability = random.randint(1, 5)
+            effect = random.choice(["+1 mana per turn", "reduce spell cost",
+                                    "increase creature attack"])
+            return ArtifactCard(name, cost, rarity, durability, effect)
 
         elif isinstance(name_or_power, int):
-            name, cost, rarity, _, effect = random.choice(
-                list(self.ARTIFACTS.values())
-            )
+            cost = name_or_power
+            name = random.choice(["Mana Ring", "Sword of Power",
+                                  "Shield of Light"])
+            rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
             durability = name_or_power
+            effect = random.choice(["+1 mana per turn", "reduce spell cost",
+                                    "increase creature attack"])
             return ArtifactCard(name, cost, rarity, durability, effect)
 
         name, cost, rarity, durability, effect = random.choice(

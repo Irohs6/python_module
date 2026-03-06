@@ -9,19 +9,24 @@ class AggressiveStrategy(GameStrategy):
     def execute_turn(self, hand: list, battlefield: list) -> dict:
         """Execute an aggressive turn: play low-cost cards first."""
         sorted_hand = sorted(hand, key=lambda c: c.cost)
+
         cards_played = []
         mana_used = 0
         damage_dealt = 0
-        available_mana = 5
+        available_mana = 10
 
         for card in sorted_hand:
             if card.cost <= available_mana:
+
                 cards_played.append(card.name)
                 mana_used += card.cost
                 available_mana -= card.cost
+
                 info = card.get_card_info()
+
                 if info.get('type') == 'Creature':
                     damage_dealt += info.get('attack', 0)
+
                 elif info.get('type') == 'Spell':
                     damage_dealt += card.cost
 
