@@ -24,10 +24,25 @@ class TournamentCard(Card, Combatable, Rankable):
         self._rating = base_rating
 
     def play(self, game_state: dict) -> dict:
+        """Play the creature card onto the battlefield."""
+        if not self.is_playable(game_state['mana']):
+            return {
+                'is_playable': False,
+                'result':
+                    {
+                        'card': self.name,
+                        'required_mana': self.cost,
+                        'available_mana': game_state['mana']
+                    }
+            }
         return {
-            "card_played": self.name,
-            "mana_used": self.cost,
-            "effect": "Tournament card played",
+            'is_playable': True,
+            'result':
+                {
+                    'card_played': self.name,
+                    'mana_used': self.cost,
+                    'effect': 'Creature summoned to battlefield'
+                }
         }
 
     def attack(self, target: object) -> dict:

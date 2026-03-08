@@ -13,18 +13,18 @@ class FantasyCardFactory(CardFactory):
     """Factory that creates fantasy-themed cards."""
 
     CREATURES = {
-        "dragon": ("Fire Dragon", 5, "Legendary", 7, 5),
-        "goblin": ("Goblin Warrior", 2, "Common", 3, 2),
+        "Fire Dragon": ("Fire Dragon", 5, "Legendary", 7, 5),
+        "Goblin Warrior": ("Goblin Warrior", 2, "Common", 3, 2),
     }
 
     SPELLS = {
-        "fireball": ("Fireball", 4, "Rare", "damage"),
-        "lightning": ("Lightning Bolt", 3, "Rare", "damage"),
-        "heal": ("Healing Light", 2, "Common", "heal"),
+        "Fireball": ("Fireball", 4, "Rare", "damage"),
+        "Lightning Bolt": ("Lightning Bolt", 3, "Rare", "damage"),
+        "Healing Light": ("Healing Light", 2, "Common", "heal"),
     }
 
     ARTIFACTS = {
-        "mana_ring": ("Mana Ring", 2, "Common", 5, "+1 mana per turn"),
+        "Mana Ring": ("Mana Ring", 2, "Common", 5, "+1 mana per turn"),
     }
 
     # ---- Creature ----
@@ -34,7 +34,7 @@ class FantasyCardFactory(CardFactory):
     ) -> CreatureCard:
         """Create a fantasy creature card."""
         if isinstance(name_or_power, str):
-            name = name_or_power.lower()
+            name = name_or_power
             cost = random.randint(1, 8)
             rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
             attack = random.randint(1, 8)
@@ -61,7 +61,7 @@ class FantasyCardFactory(CardFactory):
     ) -> SpellCard:
         """Create a fantasy spell card."""
         if isinstance(name_or_power, str):
-            name = name_or_power.lower()
+            name = name_or_power
             cost = random.randint(1, 5)
             rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
             effect_type = random.choice(["damage", "heal", "buff"])
@@ -86,7 +86,7 @@ class FantasyCardFactory(CardFactory):
     ) -> ArtifactCard:
         """Create a fantasy artifact card."""
         if isinstance(name_or_power, str):
-            name = name_or_power.lower()
+            name = name_or_power
             cost = random.randint(1, 5)
             rarity = random.choice(["Common", "Rare", "Epic", "Legendary"])
             durability = random.randint(1, 5)

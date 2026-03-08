@@ -26,15 +26,9 @@ def main() -> None:
 
     # Simulate turn
     print("\nSimulating aggressive turn...")
-    hand = [
-        factory.create_creature('Fire Dragon'),
-        factory.create_creature('Goblin Warrior'),
-        factory.create_spell('Lightning Bolt'),
-    ]
-    hand_display = [f"{card.name} ({card.cost})" for card in hand]
-    print(f"Hand: {hand_display}")
+    result = engine.simulate_turn()
+    print(f"Hand: {result.get('hand', [])}")
 
-    result = strategy.execute_turn(hand, [])
     print("\nTurn execution:")
     print(f"Strategy: {result['strategy']}")
     actions = {
@@ -45,8 +39,7 @@ def main() -> None:
     }
     print(f"Actions: {actions}")
 
-    # Engine simulation
-    engine.simulate_turn()
+    # Engine status
     report = engine.get_engine_status()
     print(f"\nGame Report: {report}")
 

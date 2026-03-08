@@ -32,14 +32,14 @@ class GameEngine:
             return {'error': 'Engine not configured'}
 
         if not self.hand:
-            self.hand = [
-                self.factory.create_creature('dragon'),
-                self.factory.create_creature('goblin'),
-                self.factory.create_spell('lightning'),
-            ]
+            deck = self.factory.create_themed_deck(5)
+            for cards in deck.values():
+                self.hand.extend(cards)
             self.cards_created += len(self.hand)
 
+        hand_display = [f"{c.name} ({c.cost})" for c in self.hand]
         result = self.strategy.execute_turn(self.hand, [])
+        result['hand'] = hand_display
         self.turns_simulated += 1
         self.total_damage += result.get('damage_dealt', 0)
         self.hand = []
