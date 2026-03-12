@@ -1,4 +1,4 @@
 """Exercise 1: Deck Builder"""
-from ex1.SpellCard import SpellCard  # noqa: F401
-from ex1.ArtifactCard import ArtifactCard  # noqa: F401
-from ex1.Deck import Deck  # noqa: F401
+from .SpellCard import SpellCard  # noqa: F401
+from .ArtifactCard import ArtifactCard  # noqa: F401
+from .Deck import Deck  # noqa: F401

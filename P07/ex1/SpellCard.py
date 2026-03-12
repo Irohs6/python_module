@@ -20,20 +20,38 @@ class SpellCard(Card):
 
     def play(self, game_state: dict) -> dict:
         """Play the spell card, applying its instant effect."""
-        effects = {
-            'damage': f'Deal {self.cost} damage to target',
-            'heal': f'Restore {self.cost} health to target',
-            'buff': f'Buff target with +{self.cost} stats',
-            'debuff': f'Debuff target with -{self.cost} stats'
-        }
-        return {
-            'card_played': self.name,
-            'mana_used': self.cost,
-            'effect': effects.get(self.effect_type, 'Unknown effect')
-        }
+        if not isinstance(game_state, dict):
+            raise ValueError("game_state must be a dictionary")
+
+        if not self.is_playable(game_state.get('mana', 0)):
+            return {
+                'is_playable': False,
+                'result':
+                    {
+                        'card': self.name,
+                        'required_mana': self.cost,
+                        'available_mana': game_state.get('mana', 0)
+                    }
+            }
+        else:
+            effects = {
+                'damage': f'Deal {self.cost} damage to target',
+                'heal': f'Restore {self.cost} health to target',
+                'buff': f'Buff target with +{self.cost} stats',
+                'debuff': f'Debuff target with -{self.cost} stats'
+            }
+            return {
+                'is_playable': True,
+                'result': {
+                    'card_played': self.name,
+                    'mana_used': self.cost,
+                    'effect': effects.get(self.effect_type, 'Unknown effect')
+                }
+            }
 
     def get_card_info(self) -> dict:
         """Return spell card info including effect type."""
+
         info = super().get_card_info()
         info['type'] = 'Spell'
         info['effect_type'] = self.effect_type

@@ -7,15 +7,24 @@ class TournamentPlatform:
     def __init__(self) -> None:
         self._cards: dict[str, TournamentCard] = {}
         self._matches: list[dict] = []
+        self._name_counters: dict[str, int] = {}
 
     def register_card(self, card: TournamentCard) -> str:
-        card_id = f"{card.name.lower().replace(' ', '_')}_001"
+        base = card.name.lower().replace(' ', '_')
+        count = self._name_counters.get(base, 0) + 1
+        self._name_counters[base] = count
+        card_id = f"{base}_{count:03d}"
         self._cards[card_id] = card
         return card_id
 
     def create_match(self, card1_id: str, card2_id: str) -> dict:
-        card1 = self._cards[card1_id]
-        card2 = self._cards[card2_id]
+        try:
+            card1 = self._cards[card1_id]
+            card2 = self._cards[card2_id]
+        except KeyError:
+            raise ValueError("Both card IDs must be "
+                             "registered in the platform.")
+
         if card1.atk >= card2.atk:
             winner, loser = card1, card2
             winner_id, loser_id = card1_id, card2_id

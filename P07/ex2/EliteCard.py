@@ -23,11 +23,30 @@ class EliteCard(Card, Combatable, Magical):
     # Implémentation de Card
 
     def play(self, game_state: dict) -> dict:
-        game_state['play'] = {'card_played': self.name,
-                              'mana_used': self.cost,
-                              'effect': 'Elite card enters the battlefield'
-                              ' with combat and magic abilities'}
-        return game_state
+        """Play the creature card onto the battlefield."""
+        if not isinstance(game_state, dict):
+            raise ValueError("game_state must be a dictionary")
+
+        if not self.is_playable(game_state.get('mana', 0)):
+            return {
+                'is_playable': False,
+                'result':
+                    {
+                        'card': self.name,
+                        'required_mana': self.cost,
+                        'available_mana': game_state.get('mana', 0)
+                    }
+            }
+        return {
+            'is_playable': True,
+            'result':
+                {
+                    'card_played': self.name,
+                    'mana_used': self.cost,
+                    'effect': 'Elite card summoned to battlefield with '
+                    'combat and magic abilities'
+                }
+        }
 
     def get_card_info(self) -> dict:
         info = super().get_card_info()

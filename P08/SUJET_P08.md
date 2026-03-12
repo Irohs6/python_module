@@ -1,50 +1,68 @@
-# SUJET P08 — The Matrix: Welcome to the Real World of Data Engineering
-# Récapitulatif en français
+# P08 — The Matrix: Welcome to the Real World of Data Engineering
+
+---
+
+## Table des matières
+
+1. [Thème général](#thème-général)
+2. [Exigences générales](#exigences-générales)
+3. [EX0 — construct.py](#ex0--entering-the-matrix)
+4. [EX01 — loading.py](#ex01--loading-programs)
+5. [EX02 — oracle.py](#ex02--accessing-the-mainframe)
+6. [Fichiers à rendre](#fichiers-à-rendre)
+7. [Points clés pour la soutenance](#points-clés-pour-la-soutenance)
 
 ---
 
 ## Thème général
 
 Le projet P08 tourne autour de la métaphore de **The Matrix** :
-- L'environnement virtuel Python = "Le Construct" (espace d'entraînement isolé)
-- Les packages = "Les programmes" (armes chargées dans l'esprit)
-- Les variables d'environnement = "La Mainframe" (configuration secrète de l'Oracle)
+
+| Métaphore | Concept Python |
+|---|---|
+| Le Construct | Environnement virtuel (espace isolé) |
+| Les programmes | Packages (chargés dans l'esprit) |
+| La Mainframe | Variables d'environnement (config secrète) |
 
 L'objectif est de maîtriser les **3 piliers de l'environnement Python professionnel** :
-1. Les environnements virtuels (venv)
-2. La gestion des dépendances (pip & Poetry)
-3. La configuration sécurisée (variables d'environnement / .env)
+
+1. Les environnements virtuels (`venv`)
+2. La gestion des dépendances (`pip` & `Poetry`)
+3. La configuration sécurisée (variables d'environnement / `.env`)
 
 ---
 
 ## Exigences générales
 
 - Python 3.10+
-- Code conforme flake8
+- Code conforme `flake8`
 - Type hints sur toutes les fonctions
-- Gestion des exceptions avec try/except
-- Nommage snake_case
+- Gestion des exceptions avec `try/except`
+- Nommage `snake_case`
 - Commentaires explicatifs sur la détection d'environnement
-- Tester avec ET sans venv, avec ET sans dépendances
+- Tester avec **ET** sans venv, avec **ET** sans dépendances
 
 ---
 
-## EX0 — Entering the Matrix (`construct.py`)
+## EX0 — Entering the Matrix
+
+> **Fichier :** `construct.py`
 
 ### Ce qui est attendu
 
 Créer un programme `construct.py` qui :
+
 - **Détecte** si on est dans un environnement virtuel ou non
 - **Affiche** des informations sur l'environnement Python courant
 - **Fournit des instructions** pour créer et activer un venv si aucun n'est détecté
 - **Compare** les chemins de packages global vs venv
 
 ### Modules autorisés
+
 `sys`, `os`, `site`
 
 ### Comment détecter un venv ?
 
-Il existe 3 façons principales :
 ```python
 # Méthode 1 : sys.prefix != sys.base_prefix (la plus fiable)
 import sys
@@ -58,8 +76,9 @@ in_venv = os.environ.get('VIRTUAL_ENV') is not None
 in_venv = hasattr(sys, 'real_prefix')
 ```
 
-### Exemple de sortie — HORS venv
+### Exemples de sortie
 
+**Hors venv :**
 ```
 MATRIX STATUS: You're still plugged in
 Current Python: /usr/bin/python3.11
@@ -73,8 +92,7 @@ To enter the construct, run:
 Then run this program again.
 ```
 
-### Exemple de sortie — DANS le venv
-
+**Dans le venv :**
 ```
 MATRIX STATUS: Welcome to the construct
 Current Python: /path/to/matrix_env/bin/python
@@ -102,22 +120,21 @@ python3 construct.py
 
 ### Ressources
 
-- Documentation officielle venv :
-  https://docs.python.org/3/library/venv.html
-- sys.prefix vs sys.base_prefix expliqué :
-  https://docs.python.org/3/library/sys.html#sys.prefix
-- module site (chemins de packages) :
-  https://docs.python.org/3/library/site.html
-- Real Python — Virtual Environments (excellent tutoriel) :
-  https://realpython.com/python-virtual-environments-a-primer/
+- [Documentation officielle venv](https://docs.python.org/3/library/venv.html)
+- [sys.prefix vs sys.base_prefix](https://docs.python.org/3/library/sys.html#sys.prefix)
+- [Module site](https://docs.python.org/3/library/site.html)
+- [Real Python — Virtual Environments](https://realpython.com/python-virtual-environments-a-primer/)
 
 ---
 
-## EX01 — Loading Programs (`loading.py` + `requirements.txt` + `pyproject.toml`)
+## EX01 — Loading Programs
+
+> **Fichiers :** `loading.py` + `requirements.txt` + `pyproject.toml`
 
 ### Ce qui est attendu
 
 Créer un programme `loading.py` qui :
+
 - **Utilise pandas** pour manipuler des données
 - **Utilise numpy** pour des calculs numériques
 - **Utilise matplotlib** pour générer une visualisation
@@ -130,7 +147,8 @@ Fournir **2 fichiers de dépendances** :
 - `pyproject.toml` → pour Poetry
 
 ### Modules autorisés
-`pandas`, `requests` (optionnel), `matplotlib`, `numpy`, `sys`, `importlib`
+
+`pandas`, `numpy`, `matplotlib`, `requests` (optionnel), `sys`, `importlib`
 
 ### Comment détecter si un package est installé ?
 
@@ -147,7 +165,7 @@ def check_dependency(package_name: str) -> tuple[bool, str]:
         return False, ''
 ```
 
-### Structure requirements.txt (pip)
+### Structure requirements.txt
 
 ```
 pandas>=2.0.0
@@ -156,7 +174,7 @@ matplotlib>=3.7.0
 requests>=2.31.0
 ```
 
-### Structure pyproject.toml (Poetry)
+### Structure pyproject.toml
 
 ```toml
 [tool.poetry]
@@ -176,8 +194,9 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 ```
 
-### Exemple de sortie
+### Exemples de sortie
 
+**Avec dépendances :**
 ```
 LOADING STATUS: Loading programs...
 Checking dependencies:
@@ -191,8 +210,7 @@ Analysis complete!
 Results saved to: matrix_analysis.png
 ```
 
-### Sortie si dépendances manquantes
-
+**Sans dépendances :**
 ```
 LOADING STATUS: Loading programs...
 Checking dependencies:
@@ -218,36 +236,30 @@ poetry run python loading.py
 
 ### Ressources
 
-- pandas — manipulation de données :
-  https://pandas.pydata.org/docs/getting_started/index.html
-- numpy — calcul numérique :
-  https://numpy.org/doc/stable/user/quickstart.html
-- matplotlib — visualisation :
-  https://matplotlib.org/stable/tutorials/introductory/quick_start.html
-- importlib — import dynamique :
-  https://docs.python.org/3/library/importlib.html
-- Poetry — guide débutant :
-  https://python-poetry.org/docs/basic-usage/
-- pip vs Poetry comparaison :
-  https://realpython.com/dependency-management-python-poetry/
-- requirements.txt best practices :
-  https://pip.pypa.io/en/stable/reference/requirements-file-format/
+- [pandas — documentation](https://pandas.pydata.org/docs/getting_started/index.html)
+- [numpy — guide rapide](https://numpy.org/doc/stable/user/quickstart.html)
+- [matplotlib — tutoriel](https://matplotlib.org/stable/tutorials/introductory/quick_start.html)
+- [importlib — import dynamique](https://docs.python.org/3/library/importlib.html)
+- [Poetry — guide débutant](https://python-poetry.org/docs/basic-usage/)
 
 ---
 
-## EX02 — Accessing the Mainframe (`oracle.py` + `.env.example` + `.gitignore`)
+## EX02 — Accessing the Mainframe
+
+> **Fichiers :** `oracle.py` + `.env.example` + `.gitignore`
 
 ### Ce qui est attendu
 
 Créer un programme `oracle.py` qui :
+
 - **Charge la configuration** depuis des variables d'environnement
 - **Utilise un fichier `.env`** pour les réglages de développement
-- **Gère dev vs prod** (comportement différent selon MATRIX_MODE)
+- **Gère dev vs prod** (comportement différent selon `MATRIX_MODE`)
 - **Gère les erreurs** si des variables sont manquantes
 - **Sécurise les secrets** (ne jamais afficher les clés en clair)
 
 Fournir :
-- `.env.example` → modèle de configuration (sans vraies valeurs)
+- `.env.example` → modèle de configuration (sans vraies valeurs, **commité**)
 - `.gitignore` → exclure `.env` du versioning
 
 ### Variables de configuration requises
@@ -261,6 +273,7 @@ Fournir :
 | `ZION_ENDPOINT` | URL du réseau | `http://localhost:8000` |
 
 ### Modules autorisés
+
 `os`, `sys`, `python-dotenv`
 
 ### Comment utiliser python-dotenv ?
@@ -281,8 +294,9 @@ if api_key is None:
     print("[WARNING] API_KEY non configurée !")
 ```
 
-### Exemple de sortie (avec .env configuré)
+### Exemples de sortie
 
+**Avec `.env` configuré :**
 ```
 ORACLE STATUS: Reading the Matrix...
 Configuration loaded:
@@ -298,8 +312,7 @@ Environment security check:
 The Oracle sees all configurations.
 ```
 
-### Sortie sans configuration
-
+**Sans configuration :**
 ```
 ORACLE STATUS: Reading the Matrix...
 [WARNING] MATRIX_MODE not set, defaulting to: development
@@ -324,30 +337,23 @@ python3 oracle.py
 MATRIX_MODE=production API_KEY=secret123 python3 oracle.py
 ```
 
-### Important : sécurité
+### Sécurité
 
-- `.env` doit être dans `.gitignore` (ne JAMAIS committer les secrets)
+- `.env` doit être dans `.gitignore` — **ne JAMAIS committer les secrets**
 - `.env.example` est commité (modèle sans valeurs réelles)
-- Ne jamais afficher une API_KEY en clair dans les logs
-- python-dotenv doit être installé : `pip install python-dotenv`
+- Ne jamais afficher une `API_KEY` en clair dans les logs
+- Installer python-dotenv : `pip install python-dotenv`
 
 ### Ressources
 
-- python-dotenv documentation :
-  https://pypi.org/project/python-dotenv/
-  https://saurabh-kumar.com/python-dotenv/
-- os.environ / os.getenv :
-  https://docs.python.org/3/library/os.html#os.environ
-- 12-Factor App — configuration :
-  https://12factor.net/config
-- Variables d'environnement expliquées :
-  https://realpython.com/python-environment-variables/
-- Sécurité des secrets dans les projets Python :
-  https://blog.gitguardian.com/secrets-api-management/
+- [python-dotenv documentation](https://saurabh-kumar.com/python-dotenv/)
+- [os.environ / os.getenv](https://docs.python.org/3/library/os.html#os.environ)
+- [12-Factor App — configuration](https://12factor.net/config)
+- [Variables d'environnement en Python](https://realpython.com/python-environment-variables/)
 
 ---
 
-## Résumé des fichiers à rendre
+## Fichiers à rendre
 
 ```
 P08/
@@ -363,10 +369,14 @@ P08/
     └── .gitignore            ← exclut .env (non commité)
 ```
 
-## Points clés à retenir pour la soutenance
+---
 
-1. **Pourquoi un venv ?** → Isoler les dépendances projet, éviter les conflits entre projets
-2. **pip vs Poetry ?** → pip = simple, Poetry = gestion avancée des versions + lock file
-3. **Pourquoi .env ?** → Séparer le code de la configuration, ne pas hardcoder les secrets
-4. **sys.prefix vs sys.base_prefix** → La différence indique si on est dans un venv
-5. **importlib.import_module()** → Import dynamique pour tester la disponibilité d'un package
+## Points clés pour la soutenance
+
+| # | Question | Réponse |
+|---|---|---|
+| 1 | Pourquoi un venv ? | Isoler les dépendances projet, éviter les conflits entre projets |
+| 2 | pip vs Poetry ? | pip = simple / Poetry = gestion avancée des versions + lock file |
+| 3 | Pourquoi .env ? | Séparer le code de la config, ne pas hardcoder les secrets |
+| 4 | sys.prefix vs sys.base_prefix ? | La différence indique si on est dans un venv |
+| 5 | importlib.import_module() ? | Import dynamique pour tester la disponibilité d'un package |

@@ -25,14 +25,17 @@ class TournamentCard(Card, Combatable, Rankable):
 
     def play(self, game_state: dict) -> dict:
         """Play the creature card onto the battlefield."""
-        if not self.is_playable(game_state['mana']):
+        if not isinstance(game_state, dict):
+            raise ValueError("game_state must be a dictionary")
+
+        if not self.is_playable(game_state.get('mana', 0)):
             return {
                 'is_playable': False,
                 'result':
                     {
                         'card': self.name,
                         'required_mana': self.cost,
-                        'available_mana': game_state['mana']
+                        'available_mana': game_state.get('mana', 0)
                     }
             }
         return {
@@ -45,13 +48,20 @@ class TournamentCard(Card, Combatable, Rankable):
                 }
         }
 
-    def attack(self, target: object) -> dict:
+    def attack(self, target) -> dict:
         damage = self.atk
-        target.defend(damage)
-        return {
-            "damage_dealt": damage,
-            "target_remaining_health": target.health,
-        }
+        if hasattr(target, "defend"):
+            if hasattr(target, "health"):
+                target.defend(damage)
+            return {
+                "damage_dealt": damage,
+                "target_remaining_health": target.health,
+            }
+        else:
+            return {
+                "damage_dealt": damage,
+                "target_remaining_health": None,
+            }
 
     def defend(self, incoming_damage: int) -> dict:
         self.health -= incoming_damage

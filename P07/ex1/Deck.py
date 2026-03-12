@@ -5,15 +5,14 @@ from typing import Optional
 
 from ex0.Card import Card
 from ex0.CreatureCard import CreatureCard
-from ex1.SpellCard import SpellCard
-from ex1.ArtifactCard import ArtifactCard
+from .SpellCard import SpellCard
+from .ArtifactCard import ArtifactCard
 
 
 class Deck:
     """A deck management class that handles any card type."""
 
     def __init__(self) -> None:
-        """Initialize an empty deck."""
         self.cards: list[Card] = []
 
     def add_card(self, card: Card) -> None:
@@ -41,22 +40,22 @@ class Deck:
     def get_deck_stats(self) -> dict:
         """Return statistics about the deck composition."""
         creatures = sum(
-            1 for c in self.cards if isinstance(c, CreatureCard)
+            1 for card in self.cards if isinstance(card, CreatureCard)
         )
-        spells = sum(
-            1 for c in self.cards if isinstance(c, SpellCard)
-        )
+        spells = sum(1 for card in self.cards if isinstance(card, SpellCard))
         artifacts = sum(
-            1 for c in self.cards if isinstance(c, ArtifactCard)
+            1 for card in self.cards if isinstance(card, ArtifactCard)
         )
         total = len(self.cards)
         avg_cost = (
-            sum(c.cost for c in self.cards) / total if total else 0.0
+            round(sum(card.cost for card in self.cards) / total, 1)
+            if total
+            else 0.0
         )
         return {
-            'total_cards': total,
-            'creatures': creatures,
-            'spells': spells,
-            'artifacts': artifacts,
-            'avg_cost': avg_cost
+            "total_cards": total,
+            "creatures": creatures,
+            "spells": spells,
+            "artifacts": artifacts,
+            "avg_cost": avg_cost,
         }

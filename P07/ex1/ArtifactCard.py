@@ -19,11 +19,27 @@ class ArtifactCard(Card):
         self.is_active = True
 
     def play(self, game_state: dict) -> dict:
-        """Play the artifact card onto the battlefield."""
+        """Play the creature card onto the battlefield."""
+        if not isinstance(game_state, dict):
+            raise ValueError("game_state must be a dictionary")
+        if not self.is_playable(game_state.get('mana', 0)):
+            return {
+                'is_playable': False,
+                'result':
+                    {
+                        'card': self.name,
+                        'required_mana': self.cost,
+                        'available_mana': game_state.get('mana', 0)
+                    }
+            }
         return {
-            'card_played': self.name,
-            'mana_used': self.cost,
-            'effect': f'Permanent: {self.effect}'
+            'is_playable': True,
+            'result':
+                {
+                    'card_played': self.name,
+                    'mana_used': self.cost,
+                    'effect': f'Permanent: {self.effect}'
+                }
         }
 
     def get_card_info(self) -> dict:

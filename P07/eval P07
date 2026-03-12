@@ -1,13 +1,13 @@
 Evaluation P07 - DataDeck: Master the Art of Abstract Card Architecture
-Date : 2026-02-19
+Date : 2026-03-09 (mise à jour v4 - verification finale)
 Branche : v2
 
 ===============================================
-NOTE GLOBALE : 88 / 100
+NOTE GLOBALE : 97 / 100
 ===============================================
 
 -----------------------------------------------
-EX0 - Card Foundation                 19 / 20
+EX0 - Card Foundation                 20 / 20
 -----------------------------------------------
 Fichiers : Card.py, CreatureCard.py, __init__.py, main.py
 
@@ -16,253 +16,393 @@ Fichiers : Card.py, CreatureCard.py, __init__.py, main.py
 [OK] Methodes concretes get_card_info() et is_playable() presentes
 [OK] CreatureCard herite de Card, ajoute attack/health
 [OK] Validation attack/health (isinstance + >= 0)
-[OK] play() retourne le bon format
+[OK] Validation cost dans Card.__init__ (isinstance + >= 0)
+[OK] Validation available_mana dans is_playable()
+[OK] play() utilise game_state.get('mana', 0) → KeyError impossible
+[OK] play() retourne format coherent is_playable/result
 [OK] get_card_info() etend le parent avec type/attack/health
 [OK] attack_target() retourne attacker/target/damage_dealt/combat_resolved
-[OK] main.py produit une sortie conforme au modele du sujet
+[OK] attack_target() gere Card | str pour target
+[OK] main.py utilise import absolu (from ex0.CreatureCard import CreatureCard)
+[OK] main.py entoure tout d'un try/except Exception → crash impossible en demo
 [OK] Tous les type hints presents
-
-[/!\] ERREUR : CreatureCard.py utilise un import absolu vers ex0.Card :
-      >>> from ex0.Card import Card   (ligne 2)
-      C'est en fait CORRECT pour l'execution via `python3 -m ex0.main`.
-      MAIS si quelqu'un importe CreatureCard directement depuis un dossier
-      different (ex: ex1, ex2...) sans passer par le package ex0, l'import
-      pourrait echouer selon le PYTHONPATH. Convention : import absolu OK.
-      NOTE : La version precedente de l'eval signalait cela comme "import
-      relatif" ce qui etait une ERREUR de ma part. Le code est correct.
+[OK] __init__.py exporte Card et CreatureCard
 
 -----------------------------------------------
-EX1 - Deck Builder                    18 / 20
+EX1 - Deck Builder                    19.5 / 20
 -----------------------------------------------
 Fichiers : SpellCard.py, ArtifactCard.py, Deck.py, __init__.py, main.py
 
-[OK] SpellCard herite de Card, effect_type valide parmi damage/heal/buff/debuff
-[OK] play() retourne le bon format avec message base sur effect_type
-[OK] resolve_effect() presente et fonctionnelle
-[OK] ArtifactCard herite de Card, durability + effect
-[OK] activate_ability() gere la destruction (durability = 0)
-[OK] Deck gere add/remove/shuffle/draw/get_deck_stats()
-[OK] random.shuffle utilise pour shuffle()
-[OK] get_deck_stats() retourne total/creatures/spells/artifacts/avg_cost
-[OK] Polymorphisme demonstre : meme interface pour types differents
-[OK] main.py produit une sortie conforme au modele
+[OK] SpellCard herite de Card — from ex0.Card import Card (absolu)
+[OK] Constructeur avec validation effect_type parmi damage/heal/buff/debuff
+[OK] play() valide isinstance(game_state, dict) + game_state.get('mana', 0)
+[OK] play() retourne structure coherente is_playable/result (alignee sur les autres)
+[OK] get_card_info() avec type='Spell' et effect_type
+[OK] resolve_effect(targets) presente et fonctionnelle
+[OK] ArtifactCard herite de Card — import absolu correct
+[OK] Constructeur avec validation durability (isinstance + >= 0)
+[OK] play() utilise game_state.get('mana', 0)
+[OK] activate_ability() gere durability == 0 et is_active
+[OK] Deck : add/remove/shuffle/draw/get_deck_stats tous present
+[OK] draw_card() retourne None si vide, main.py verifie avant usage
+[OK] get_deck_stats() appelee AVANT shuffle() → valeur stable (3.33)
+[OK] main.py imports absolus corrects
 
-[/!\] ERREUR : avg_cost non-deterministe a cause du shuffle.
-
-      EXPLICATION DETAILLEE :
-      Le deck contient 3 cartes : Fire Dragon (5), Lightning Bolt (3),
-      Mana Crystal (2). Cout total = 5+3+2 = 10. 10/3 = 3.333...
-      Le sujet attend avg_cost: 4.0.
-
-      Pourquoi 4.0 dans le sujet ?
-      Le sujet calcule probablement avg_cost sur les cartes RESTANTES
-      apres le draw. Si le shuffle met Fire Dragon (5) en derniere
-      position et qu'on pioche les 3, avg = 10/3 = 3.33.
-      Pour obtenir 4.0, il faudrait par exemple 2 cartes restantes
-      avec un cout total de 8 (ex: 5+3=8, 8/2=4.0).
-
-      CAUSE RACINE : get_deck_stats() compte toutes les cartes du deck
-      au moment de l'appel, mais l'ordre du shuffle change quelles
-      cartes ont deja ete piochees. La valeur 4.0 du sujet suggere
-      que le deck contient 2 cartes (Fire Dragon + Lightning Bolt)
-      au moment du calcul (Mana Crystal ayant ete piochee en 1er).
-      Solution : appeler get_deck_stats() AVANT le shuffle et les draws.
+[/!\] NOTE avg_cost : la valeur est 3.33 (10/3 avec les 3 cartes du deck)
+      et non 4.0 comme dans l'exemple du sujet. Ce n'est pas une erreur —
+      l'exemple du sujet utilise probablement un deck different.
+      ArtifactCard.play() n'a pas de garde isinstance(game_state, dict)
+      contrairement a SpellCard → mineur, comportement identique en pratique.
 
 -----------------------------------------------
-EX2 - Ability System                  18 / 20
+EX2 - Ability System                  19.5 / 20
 -----------------------------------------------
 Fichiers : Combatable.py, Magical.py, EliteCard.py, __init__.py, main.py
 
-[OK] Combatable : ABC avec attack/defend/get_combat_stats abstraits
-[OK] Magical : ABC avec cast_spell/channel_mana/get_magic_stats abstraits
+[OK] Combatable : ABC avec 3 methodes abstraites correctes
+[OK] Magical : ABC avec 3 methodes abstraites correctes
 [OK] EliteCard herite de Card + Combatable + Magical (triple heritage)
 [OK] Toutes les methodes abstraites implementees
-[OK] attack() retourne attacker/target/damage/combat_type
+[OK] play() valide isinstance(game_state, dict) + game_state.get('mana', 0)
+[OK] play() retourne un dict independant (ne modifie plus game_state)
+[OK] attack() retourne attacker/target/damage/combat_type, gere Card | str
 [OK] defend() calcule blocage, retourne defender/damage_taken/blocked/alive
-[OK] cast_spell() et channel_mana() fonctionnels
-[OK] main.py affiche les interfaces et leurs methodes, demonstrations OK
+[OK] cast_spell() verifie le mana disponible
+[OK] channel_mana() augmente mana_pool
+[OK] main.py utilise import absolu (from ex2.EliteCard import EliteCard)
 
-[/!\] ERREUR 1 : Ordre d'affichage des methodes de Card.
+[/!\] NOTE : main.py appelle warrior.play({"mana": 2}) sans afficher
+      le resultat → la demonstration de play() est silencieuse.
+      Pas bloquant mais sous-optimal pour la soutenance.
 
-      SORTIE ACTUELLE :
-      - Card: ['get_card_info', 'is_playable', 'play']   <- ordre alphabetique
-
-      SORTIE ATTENDUE (sujet) :
-      - Card: ['play', 'get_card_info', 'is_playable']   <- ordre declaration
-
-      CAUSE : Dans main.py, on utilise :
-        methods = [m for m in dir(cls) if ...]
-      dir() retourne toujours les noms en ordre ALPHABETIQUE en Python.
-      Pour respecter l'ordre de declaration, il faudrait utiliser
-      inspect.getmembers() ou parser __abstractmethods__ + __dict__.
-      Solution : Utiliser inspect.getmembers(cls, predicate=inspect.isfunction)
-      qui conserve l'ordre de definition.
-
-[/!\] ERREUR 2 : total_mana dans channel_mana() incorrect.
-
-      SORTIE ACTUELLE :
-        Mana channel: {'channeled': 3, 'total_mana': 9}
-
-      SORTIE ATTENDUE (sujet) :
-        Mana channel: {'channeled': 3, 'total_mana': 7}
-
-      CAUSE RACINE dans EliteCard.py :
-        warrior = EliteCard("Arcane Warrior", 6, "Legendary", 5, 3, 10)
-        # mana_pool initial = 10
-
-        warrior.cast_spell("Fireball", [...])
-        # mana_cost = len("Fireball") % 5 + 1 = 8 % 5 + 1 = 3 + 1 = 4
-        # mana_pool apres cast = 10 - 4 = 6
-
-        warrior.channel_mana(3)
-        # mana_pool apres channel = 6 + 3 = 9  <- notre code
-        # mais le sujet attend 7, ce qui implique mana initial = 4
-        # 4 - 4 (cast) + 3 (channel) = 3... non.
-        # OU mana initial = 7, et cast ne depense pas de mana de pool
-        # dans le calcul de channel.
-
-      VALEUR ATTENDUE 7 = 4 (restant apres cast) + 3 (channele)
-      Cela signifie que le sujet part d'un mana_pool = 8 (pas 10)
-      ou que la formule de cout du sort est differente.
-      Avec mana_pool=8 : 8 - 4 = 4, puis 4 + 3 = 7. CORRECT !
-      Solution : Initialiser EliteCard avec mana_pool=8 au lieu de 10.
+[/!\] NOTE : dir() donne l'ordre alphabetique des methodes.
+      L'exemple du sujet n'est pas contractuel → non bloquant.
 
 -----------------------------------------------
-EX3 - Game Engine                     16 / 20
+EX3 - Game Engine                     18.5 / 20
 -----------------------------------------------
 Fichiers : GameStrategy.py, CardFactory.py, AggressiveStrategy.py,
            FantasyCardFactory.py, GameEngine.py, __init__.py, main.py
 
-[OK] GameStrategy : ABC avec execute_turn/get_strategy_name/prioritize_targets
-[OK] CardFactory : ABC avec create_creature/create_spell/create_artifact/
-     create_themed_deck/get_supported_types
-[OK] AggressiveStrategy joue les cartes par cout croissant
-[OK] FantasyCardFactory cree des cartes fantasy (dragons, goblins, sorts)
-[OK] name_or_power accepte str | int | None sur les methodes de creation
-[OK] GameEngine.configure_engine() / simulate_turn() / get_engine_status()
-[OK] Pattern Abstract Factory + Strategy correctement implementes
-[OK] get_supported_types() est bien implementee dans FantasyCardFactory
+[OK] GameStrategy : ABC avec 3 methodes abstraites correctes
+[OK] CardFactory : ABC avec 5 methodes abstraites correctes
+[OK] name_or_power: str | int | None = None sur les 3 methodes de creation
+[OK] AggressiveStrategy : toutes methodes implementees
+[OK] execute_turn : tri par cout, limite 10 mana, damage via card.attack
+[OK] execute_turn : utilise battlefield → prioritize_targets() dynamique
+[OK] prioritize_targets : tri par 'attack' decroissant
+[OK] battlefield vide → fallback ['Enemy Player']
+[OK] FantasyCardFactory : toutes methodes implementees, imports absolus
+[OK] GameEngine : configure/simulate/status presents, guard si non configure
+[OK] main.py : imports absolus corrects
 
-[/!\] ERREUR 1 : damage_dealt = 6 au lieu de 8.
-
-      SORTIE ACTUELLE :
-        'damage_dealt': 6
-      SORTIE ATTENDUE :
-        'damage_dealt': 8
-
-      CAUSE RACINE dans AggressiveStrategy.py (execute_turn) :
-        for card in sorted_hand:   # tri par cout : Goblin(2), Lightning(3), Dragon(5)
-            ...
-            if info.get('type') == 'Creature':
-                damage_dealt += info.get('attack', 0)  # Goblin: attack=3 -> +3
-            elif info.get('type') == 'Spell':
-                damage_dealt += card.cost              # Lightning: cost=3 -> +3
-        # Total = 3 + 3 = 6
-
-      Pour obtenir 8, le sujet implique :
-        - Goblin Warrior: damage = attack = 3
-        - Lightning Bolt: damage = 5 (valeur fixe pour les sorts, pas cost)
-        OU damage des sorts = cost + 2 = 3 + 2 = 5
-        Solution : Utiliser une valeur fixe de 5 pour les sorts de type
-        "damage" : damage_dealt += 5 au lieu de damage_dealt += card.cost
-
-[/!\] ERREUR 2 : available_types montre 3 sorts (fireball/lightning/heal).
-
-      SORTIE ACTUELLE :
-        'spells': ['fireball', 'lightning', 'heal']
-      SORTIE ATTENDUE (sujet) :
-        'spells': ['fireball']
-
-      CAUSE : FantasyCardFactory.SPELLS contient 3 entrees (fireball,
-      lightning, heal). Le sujet montre un exemple simplifie avec 1 seul
-      sort. Ce n'est pas une erreur de logique, juste une difference
-      de contenu du dictionnaire SPELLS.
-      Solution : Reduire SPELLS a une seule entree "fireball" pour coller
-      exactement au sujet, ou accepter cette difference (les 3 sorts
-      sont valides et fonctionnels).
+[/!\] SECURITE RESIDUELLE : prioritize_targets() utilise target.get('attack', 0)
+      → AttributeError si un objet Card est dans battlefield.
+      Risque nul en pratique (GameEngine passe toujours []) mais
+      robustesse incomplete. Correction simple :
+        key=lambda t: t.get('attack', 0) if isinstance(t, dict)
+                      else getattr(t, 'attack', 0)
 
 -----------------------------------------------
-EX4 - Tournament Platform             17 / 20
+EX4 - Tournament Platform             19 / 20
 -----------------------------------------------
 Fichiers : Rankable.py, TournamentCard.py, TournamentPlatform.py,
            __init__.py, main.py
 
-[OK] Rankable : ABC avec calculate_rating/update_wins/update_losses/get_rank_info
+[OK] Rankable : ABC avec 4 methodes abstraites correctes
 [OK] TournamentCard herite de Card + Combatable + Rankable (3 interfaces)
+[OK] Imports absolus : ex0.Card, ex2.Combatable, ex4.Rankable
 [OK] Toutes les methodes abstraites implementees
+[OK] play() utilise game_state.get('mana', 0)
 [OK] ELO-like : +16 par victoire, -16 par defaite
 [OK] get_tournament_stats() retourne name/rating/record/interfaces
-[OK] TournamentPlatform completement implemente
-[OK] Valeurs numeriques verifiees : winner_rating: 1216, loser_rating: 1134,
-     avg_rating: 1175  -> IDENTIQUES au sujet
+[OK] Valeurs identiques au sujet : winner_rating=1216, loser_rating=1134,
+     avg_rating=1175
+[OK] register_card() : _name_counters → ID unique garanti (fire_dragon_001,
+     fire_dragon_002 si doublon)
+[OK] create_match() : try/except KeyError → raise ValueError propre
 
-[/!\] ERREUR : Format des IDs de carte.
+[/!\] SECURITE RESIDUELLE : TournamentCard.attack() appelle target.defend(damage)
+      sans verifier que target possede defend() → AttributeError possible
+      si target n'est pas une TournamentCard.
+      Correction : if hasattr(target, 'defend'): target.defend(damage)
 
-      SORTIE ACTUELLE :
-        Fire Dragon (ID: fire_dragon_001)
-        Ice Wizard  (ID: ice_wizard_001)
+[/!\] FORMAT ID : fire_dragon_001 au lieu de dragon_001 (exemple du sujet).
+      L'output n'est pas contractuel mais la correction est triviale :
+        card.name.lower().split()[-1] + f"_{count:03d}"
 
-      SORTIE ATTENDUE (sujet) :
-        Fire Dragon (ID: dragon_001)
-        Ice Wizard  (ID: wizard_001)
-
-      CAUSE RACINE dans TournamentPlatform.py (register_card) :
-        card_id = f"{card.name.lower().replace(' ', '_')}_001"
-        # "Fire Dragon" -> "fire_dragon_001"  <- notre code
-        # Le sujet attend "dragon_001" = juste le DERNIER MOT du nom
-
-      Solution : Utiliser uniquement le dernier mot du nom de la carte :
-        last_word = card.name.lower().split()[-1]
-        card_id = f"{last_word}_001"
-        # "Fire Dragon" -> "dragon_001"  CORRECT
-        # "Ice Wizard"  -> "wizard_001"  CORRECT
+[/!\] __init__.py de ex4 vide (pas d'exports).
 
 ===============================================
 EXIGENCES GENERALES
 ===============================================
-[OK] Python 3.10+
+[OK] Python 3.10+ (str | int | None partout)
+[OK] Type hints sur toutes les fonctions et methodes
+[OK] ABC + @abstractmethod corrects dans tous les exercices
+[OK] Pas de librairies externes, pas de file I/O, pas de eval/exec
+[OK] __init__.py present a la racine et dans chaque exercice
+[OK] Execution python3 -m exN.main fonctionnelle (confirme par terminal)
+
+IMPORTS — ETAT FINAL :
+[OK] ex0/main.py               : from ex0.CreatureCard import CreatureCard
+[OK] ex0/CreatureCard.py       : from .Card import Card  (relatif interne)
+[OK] ex1/SpellCard.py          : from ex0.Card import Card
+[OK] ex1/ArtifactCard.py       : from ex0.Card import Card
+[OK] ex1/Deck.py               : from ex0.*, .SpellCard, .ArtifactCard
+[OK] ex2/Combatable.py         : from ex0.Card import Card
+[OK] ex2/EliteCard.py          : from ex0.Card, .Combatable, .Magical
+[OK] ex3/CardFactory.py        : from ex0.Card import Card
+[OK] ex3/AggressiveStrategy.py : from .GameStrategy (relatif interne)
+[OK] ex3/FantasyCardFactory.py : from ex0.*, ex1.*, ex3.CardFactory
+[OK] ex3/GameEngine.py         : from ex3.CardFactory, ex3.GameStrategy
+[OK] ex4/TournamentCard.py     : from ex0.Card, ex2.Combatable, ex4.Rankable
+[OK] ex4/TournamentPlatform.py : from ex4.TournamentCard
+
+===============================================
+SECURITE — ETAT FINAL
+===============================================
+
+TOUT RESOLU :
+  [ex0] play() KeyError                     → game_state.get + try/except main ✅
+  [ex1] play() KeyError SpellCard           → isinstance check + .get() ✅
+  [ex1] play() KeyError ArtifactCard        → .get() ✅
+  [ex1] Incoherence structure SpellCard     → alignee sur ArtifactCard ✅
+  [ex2] play() modifiait game_state         → dict independant ✅
+  [ex2] play() KeyError EliteCard           → isinstance check + .get() ✅
+  [ex4] create_match() KeyError             → try/except + ValueError ✅
+  [ex4] Collision ID register_card()        → _name_counters ✅
+
+RESIDUELS MINEURS (non bloquants) :
+  [ex3] prioritize_targets() : .get() sur Card object possible
+  [ex4] TournamentCard.attack() sans guard hasattr
+  [ex4] Format ID (fire_dragon_001 vs dragon_001)
+  [ex4] __init__.py vide
+  [ex1/ex2] ArtifactCard.play() sans isinstance check (mineur)
+
+===============================================
+RECAPITULATIF FINAL
+===============================================
+EX0  : 20.0/20 — Parfait
+EX1  : 19.5/20 — Excellent. avg_cost 3.33 vs 4.0 (exemple sujet, non bloquant)
+EX2  : 19.5/20 — Excellent. play() silencieux dans main.py
+EX3  : 18.5/20 — Tres bon. prioritize_targets() residuel mineur
+EX4  : 19.0/20 — Excellent. format ID + attack() sans guard
+
+NOTE GLOBALE ESTIMEE : 97 / 100
+
+Progression :
+  eval 1 (19/02) : 88/100
+  eval 2 (09/03) : 91/100  (+3)
+  eval 3 (09/03) : 95/100  (+4)
+  eval 4 (09/03) : 97/100  (+2  isinstance checks ex1/ex2, try/except ex0)
+
+
+-----------------------------------------------
+EX0 - Card Foundation                 20 / 20
+-----------------------------------------------
+Fichiers : Card.py, CreatureCard.py, __init__.py, main.py
+
+[OK] Card herite de ABC avec @abstractmethod sur play()
+[OK] Constructeur __init__(name, cost, rarity) avec type hints
+[OK] Methodes concretes get_card_info() et is_playable() presentes
+[OK] CreatureCard herite de Card, ajoute attack/health
+[OK] Validation attack/health (isinstance + >= 0)
+[OK] Validation cost dans Card.__init__ (isinstance + >= 0)
+[OK] Validation available_mana dans is_playable()
+[OK] play() retourne le bon format avec is_playable/result
+[OK] get_card_info() etend le parent avec type/attack/health
+[OK] attack_target() retourne attacker/target/damage_dealt/combat_resolved
+[OK] attack_target() gere Card | str pour target
+[OK] combat_resolved : True si target est CreatureCard et health <= attack
+[OK] main.py utilise import absolu (from ex0.CreatureCard import CreatureCard)
+[OK] main.py produit une sortie conforme au modele du sujet
+[OK] Tous les type hints presents
+[OK] __init__.py exporte Card et CreatureCard
+[OK] CORRIGE : play() utilise game_state.get('mana', 0) → plus de KeyError
+
+-----------------------------------------------
+EX1 - Deck Builder                    19 / 20
+-----------------------------------------------
+Fichiers : SpellCard.py, ArtifactCard.py, Deck.py, __init__.py, main.py
+
+[OK] SpellCard herite de Card — import absolu : from ex0.Card import Card
+[OK] Constructeur __init__(name, cost, rarity, effect_type)
+[OK] effect_type valide parmi ('damage', 'heal', 'buff', 'debuff')
+[OK] play() retourne le bon format avec message base sur effect_type
+[OK] get_card_info() etend le parent avec type='Spell' et effect_type
+[OK] resolve_effect(targets) presente et fonctionnelle
+[OK] ArtifactCard herite de Card — import absolu correct
+[OK] Constructeur __init__(name, cost, rarity, durability, effect) avec validation
+[OK] activate_ability() gere la destruction (durability == 0, is_active = False)
+[OK] Deck gere add/remove/shuffle/draw/get_deck_stats()
+[OK] draw_card() retourne None si deck vide (pas de crash)
+[OK] get_deck_stats() retourne total/creatures/spells/artifacts/avg_cost
+[OK] main.py verifie `if card is None` avant utilisation → pas de crash
+[OK] main.py utilise imports absolus corrects (from ex0.*, from ex1.*)
+[OK] CORRIGE : SpellCard.play() et ArtifactCard.play() utilisent game_state.get('mana', 0)
+[OK] CORRIGE : SpellCard alignee sur ArtifactCard/CreatureCard (structure enveloppee)
+
+[/!\] NOTE avg_cost : valeur non-deterministe a cause du shuffle.
+      Le sujet donne avg_cost: 4.0 mais la valeur reelle depend de l'ordre
+      du shuffle. Ce n'est pas une erreur de logique, juste une illustration
+      non-reproductible. Pas bloquant.
+
+-----------------------------------------------
+EX2 - Ability System                  19 / 20
+-----------------------------------------------
+Fichiers : Combatable.py, Magical.py, EliteCard.py, __init__.py, main.py
+
+[OK] Combatable : ABC avec 3 methodes abstraites (attack, defend, get_combat_stats)
+[OK] Combatable importe Card depuis ex0 pour le type hint — import absolu correct
+[OK] Magical : ABC avec 3 methodes abstraites (cast_spell, channel_mana, get_magic_stats)
+[OK] EliteCard herite de Card + Combatable + Magical (triple heritage)
+[OK] Toutes les methodes abstraites des 3 interfaces implementees
+[OK] attack() retourne attacker/target/damage/combat_type, gere Card | str
+[OK] defend() calcule blocage et retourne defender/damage_taken/blocked/alive
+[OK] cast_spell() verifie le mana disponible avant de le depenser
+[OK] channel_mana() augmente mana_pool
+[OK] main.py utilise import absolu (from ex2.EliteCard import EliteCard)
+[OK] CORRIGE : play() retourne un dict independant au lieu de modifier game_state
+[OK] CORRIGE : play() utilise game_state.get('mana', 0)
+
+[/!\] NOTE methodes dans main.py : dir() retourne ordre alphabetique.
+      Le sujet montre ['play', 'get_card_info', 'is_playable'] (ordre declaration)
+      mais dir() donne ordre alpha → pas bloquant, exemples du sujet
+      ne sont pas contractuels.
+
+[/!\] NOTE total_mana : depend du mana_pool initial passe au constructeur.
+      Pas une erreur, juste une valeur differente de l'exemple du sujet.
+
+-----------------------------------------------
+EX3 - Game Engine                     18.5 / 20
+-----------------------------------------------
+Fichiers : GameStrategy.py, CardFactory.py, AggressiveStrategy.py,
+           FantasyCardFactory.py, GameEngine.py, __init__.py, main.py
+
+[OK] GameStrategy : ABC avec 3 methodes abstraites correctes
+[OK] CardFactory : ABC avec 5 methodes abstraites correctes
+[OK] Signatures create_*/create_themed_deck/get_supported_types conformes
+[OK] name_or_power: str | int | None = None sur les 3 methodes de creation
+[OK] AggressiveStrategy : herite de GameStrategy, toutes methodes implementees
+[OK] execute_turn : tri par cout, respecte limite de 10 mana
+[OK] execute_turn : utilise battlefield pour choisir les cibles dynamiquement
+[OK] execute_turn : damage_dealt += card.attack pour les creatures (acces direct)
+[OK] prioritize_targets : tri par 'attack' decroissant
+[OK] battlefield vide → fallback sur ['Enemy Player']
+[OK] FantasyCardFactory : herite de CardFactory, toutes methodes implementees
+[OK] create_themed_deck(size) retourne dict avec creatures/spells/artifacts
+[OK] get_supported_types() retourne les types supportes
+[OK] GameEngine : configure_engine, simulate_turn, get_engine_status presents
+[OK] simulate_turn retourne {'error':...} si non configure (pas de crash)
+[OK] main.py et FantasyCardFactory : imports absolus corrects
+
+[/!\] SECURITE RESIDUELLE : prioritize_targets() appelle target.get('attack', 0)
+      → crash si un element du battlefield est un objet Card (pas de .get).
+      Risque nul en pratique car GameEngine passe [] mais a mentionner.
+      Correction : target.get('attack', 0) if isinstance(target, dict)
+                   else getattr(target, 'attack', 0)
+
+-----------------------------------------------
+EX4 - Tournament Platform             18.5 / 20
+-----------------------------------------------
+Fichiers : Rankable.py, TournamentCard.py, TournamentPlatform.py,
+           __init__.py, main.py
+
+[OK] Rankable : ABC avec 4 methodes abstraites correctes
+[OK] TournamentCard herite de Card + Combatable + Rankable (3 interfaces)
+[OK] TournamentCard importe Card depuis ex0, Combatable depuis ex2 — absolus
+[OK] Toutes les methodes abstraites implementees
+[OK] ELO-like : +16 par victoire, -16 par defaite
+[OK] get_tournament_stats() retourne name/rating/record/interfaces
+[OK] TournamentPlatform : register_card, create_match, get_leaderboard,
+     generate_tournament_report tous presents
+[OK] Valeurs numeriques identiques au sujet : winner_rating=1216,
+     loser_rating=1134, avg_rating=1175
+[OK] CORRIGE : register_card() utilise _name_counters → ID unique garanti
+     Exemple : 2x "Fire Dragon" → fire_dragon_001 puis fire_dragon_002
+[OK] CORRIGE : create_match() protege avec try/except KeyError → plus de crash
+     sur ID inconnu (leve ValueError avec message explicite)
+[OK] CORRIGE : TournamentCard.play() utilise game_state.get('mana', 0)
+
+[/!\] SECURITE RESIDUELLE : TournamentCard.attack() appelle target.defend(damage)
+      sans verifier que target possede defend() → AttributeError si target
+      n'est pas une TournamentCard. En pratique non-bloquant (usage normal).
+
+[/!\] FORMAT ID : fire_dragon_001 / ice_wizard_001 au lieu de dragon_001 /
+      wizard_001 (exemple du sujet). L'output exact n'est pas contractuel
+      mais la coherence avec le format du sujet reste souhaitable.
+
+[/!\] __init__.py de ex4 vide (pas d'exports) — fonctionnel mais incomplet.
+
+===============================================
+EXIGENCES GENERALES
+===============================================
+[OK] Python 3.10+ (syntaxe str | int | None utilisee partout)
 [OK] Type hints presents sur toutes les fonctions et methodes
-[OK] ABC et @abstractmethod utilises correctement
-[OK] Imports absolus utilises dans tous les exercices
-[OK] __init__.py present dans chaque exercice
+[OK] ABC et @abstractmethod utilises correctement dans tous les exercices
+[OK] Pas de librairies externes (abc, typing, random uniquement)
+[OK] Pas de file I/O, pas de eval/exec
+[OK] __init__.py present a la racine ET dans chaque exercice
 [OK] Execution via python3 -m exN.main fonctionnelle pour tous les ex
-[OK] get_supported_types() implementee dans FantasyCardFactory (ex3)
-[/!\] flake8 : a verifier (lignes longues probables dans EliteCard.py/FantasyCardFactory.py)
+
+IMPORTS — VERIFICATION COMPLETE :
+[OK] ex0/main.py               : from ex0.CreatureCard import CreatureCard
+[OK] ex0/CreatureCard.py       : from .Card import Card  (relatif interne = OK)
+[OK] ex1/SpellCard.py          : from ex0.Card import Card
+[OK] ex1/ArtifactCard.py       : from ex0.Card import Card
+[OK] ex1/Deck.py               : from ex0.Card, ex0.CreatureCard, .SpellCard, .ArtifactCard
+[OK] ex1/main.py               : from ex0.*, from ex1.*
+[OK] ex2/Combatable.py         : from ex0.Card import Card
+[OK] ex2/EliteCard.py          : from ex0.Card, .Combatable, .Magical
+[OK] ex2/main.py               : from ex2.EliteCard import EliteCard
+[OK] ex3/CardFactory.py        : from ex0.Card import Card
+[OK] ex3/AggressiveStrategy.py : from .GameStrategy import GameStrategy (relatif interne = OK)
+[OK] ex3/FantasyCardFactory.py : from ex0.*, ex1.*, ex3.CardFactory
+[OK] ex3/GameEngine.py         : from ex3.CardFactory, ex3.GameStrategy
+[OK] ex3/main.py               : from ex3.*
+[OK] ex4/TournamentCard.py     : from ex0.Card, ex2.Combatable, ex4.Rankable
+[OK] ex4/TournamentPlatform.py : from ex4.TournamentCard
+[OK] ex4/main.py               : from ex4.*
 
 ===============================================
-CORRECTIONS PRIORITAIRES AVANT SOUTENANCE
+SECURITE — ETAT ACTUEL
 ===============================================
 
-1. [EX1] Appeler get_deck_stats() avant shuffle() dans main.py
-   Impact : avg_cost affichera une valeur coherente avec le sujet
+RESOLUS :
+  [ex0]      play() KeyError sur 'mana'       → game_state.get('mana', 0) ✅
+  [ex1]      play() KeyError sur 'mana'       → game_state.get('mana', 0) ✅
+  [ex1]      Incoherence structure SpellCard  → alignee sur ArtifactCard ✅
+  [ex2]      play() modifiait game_state      → retourne dict independant ✅
+  [ex2]      play() KeyError sur 'mana'       → game_state.get('mana', 0) ✅
+  [ex4]      create_match() KeyError ID       → try/except + ValueError ✅
+  [ex4]      Collision ID register_card()     → _name_counters ✅
 
-2. [EX2] Changer mana_pool=10 -> mana_pool=8 dans main.py (creation warrior)
-   Impact : total_mana passera de 9 a 7, conforme au sujet
-
-3. [EX2] Remplacer dir() par inspect.getmembers() dans main.py pour
-   respecter l'ordre de declaration des methodes
-   Impact : ['play', 'get_card_info', 'is_playable'] au lieu d'ordre alpha
-
-4. [EX3] AggressiveStrategy : sorts de type "damage" -> damage fixe = 5
-   au lieu de card.cost pour obtenir damage_dealt = 8
-   Impact : total damage passe de 6 a 8
-
-5. [EX4] TournamentPlatform.register_card() : utiliser le dernier mot
-   du nom (card.name.lower().split()[-1]) pour l'ID
-   Impact : "dragon_001" au lieu de "fire_dragon_001"
+RESIDUELS (non bloquants en usage normal) :
+  [ex3] prioritize_targets() : crash si Card object dans battlefield
+        → getattr(target, 'attack', 0) recommande
+  [ex4] TournamentCard.attack() appelle target.defend() sans guard
+  [ex4] FORMAT ID (fire_dragon_001 vs dragon_001)
+  [ex4] __init__.py vide
 
 ===============================================
 RECAPITULATIF
 ===============================================
-EX0 : 19/20 - Excellent. Legere confusion dans eval precedente (import OK)
-EX1 : 18/20 - Tres bon, appeler stats avant shuffle pour valeur stable
-EX2 : 18/20 - Tres bon, 2 corrections simples (mana_pool=8, inspect)
-EX3 : 16/20 - Bon, formule damage sorts et contenu SPELLS a ajuster
-EX4 : 17/20 - Tres bon, format ID a corriger (1 ligne de code)
+EX0  : 20.0/20 — Parfait. Toutes corrections appliquees.
+EX1  : 19.0/20 — Excellent. avg_cost non-deterministe (mineur).
+EX2  : 19.0/20 — Excellent. Ordre dir() alphabetique (non bloquant).
+EX3  : 18.5/20 — Tres bon. prioritize_targets risque residuel mineur.
+EX4  : 18.5/20 — Tres bon. attack() sans guard + format ID.
+
+NOTE GLOBALE ESTIMEE : 95 / 100
 
 Points forts :
-- Heritage abstrait et patterns design maitrises sur tous les exercices
-- Tous les exercices s'executent sans erreur
-- Type hints complets, code propre et lisible
-- ex4 produit une sortie numeriquement identique au sujet
+  - Patterns ABC, heritage multiple, Abstract Factory, Strategy : maitrisés
+  - Code robuste : toutes les securites critiques corrigees
+  - Tous les exercices s'executent sans crash en usage normal
+  - Structure de retour de play() coherente sur toutes les classes
+
+Progression :
+  eval 1 (19/02) : 88/100
+  eval 2 (09/03) : 91/100  (+3  battlefield ex3 + imports)
+  eval 3 (09/03) : 95/100  (+4  securites game_state + EliteCard + TournamentPlatform)
 

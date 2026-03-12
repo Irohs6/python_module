@@ -8,7 +8,7 @@ class Combatable(ABC):
     """Mixin class to add combat capabilities to a card."""
 
     @abstractmethod
-    def attack(self, target: Card) -> dict:
+    def attack(self, target) -> dict:
         """Attack a target, dealing damage equal to attack value."""
         pass
 
