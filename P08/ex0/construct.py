@@ -2,12 +2,14 @@
 
 import sys
 import os
+import site
 
 
 def main() -> None:
-    print("MATRIX STATUS: You're still plugged in\n")
 
     if sys.prefix == sys.base_prefix:
+        print("MATRIX STATUS: You're still plugged in\n")
+
         print("Curent Python: ", sys.executable)
         print("Virtual Environment: None detected\n")
 
@@ -24,26 +26,19 @@ def main() -> None:
     else:
         print("MATRIX STATUS: Welcome to the construct\n")
 
-        print("Current Python:", sys.executable[-22:], "\n")
-        print("Virtual Environment:", sys.prefix[-10:], "\n")
-        print("Environement Path:", sys.prefix[-18:], "\n")
+        print("Current Python:", sys.executable, "\n")
+        venv_name = os.path.basename(sys.prefix)
+        print("Virtual Environment:", venv_name, "\n")
+        print("Environement Path:", sys.prefix, "\n")
 
         print(
-            "SUCESS: You're in an isolated environment!"
+            "SUCESS: You're in an isolated environment!\n"
             "Safe to install packages without affecting"
-            "the global system."
+            "the global system.\n"
         )
 
-        print(
-            "Package installation path:",
-            os.path.join(
-                sys.prefix,
-                "lib",
-                f"python{sys.version_info.major}.{sys.version_info.
-                                                  minor}",
-                "site-packages",
-            ),
-        )
+        print("Package installation path:")
+        print(site.getsitepackages()[0])
 
 
 if __name__ == "__main__":
