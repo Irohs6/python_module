@@ -10,7 +10,7 @@ def main() -> None:
     is_env: bool = True
     print("ORACLE STATUS: Reading the Matrix...\n")
 
-    if load_dotenv(".env.example"):
+    if load_dotenv():
         print("Configuration loaded:")
 
         if os.getenv("MATRIX_MODE"):

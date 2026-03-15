@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-from ast import mod
 import importlib
-from sys import version
 
 
 def check_dependency(packages_name: list[str]) -> tuple[bool, dict[str, str]]:
@@ -11,9 +9,9 @@ def check_dependency(packages_name: list[str]) -> tuple[bool, dict[str, str]]:
     for package_name in packages_name:
         try:
             module = importlib.import_module(package_name)
-            version = getattr(module, "__version__", "unknown")
-            result[package_name] = version
-            print(f"[OK] {package_name} ({version})")
+            version_info = getattr(module, "__version__", "unknown")
+            result[package_name] = version_info
+            print(f"[OK] {package_name} ({version_info})")
         except ModuleNotFoundError:
             result[package_name] = "MISSING"
             print(f"[KO] {package_name} - MISSING")
@@ -27,7 +25,7 @@ def main() -> None:
     print("LOADING STATUS: Loading programs...")
     print("Checking dependencies:")
     packages = ["pandas", "numpy", "matplotlib", "requests"]
-    ok, versions = check_dependency(packages)
+    ok, _ = check_dependency(packages)
     if not ok:
         print("\nSome dependencies are missing. Please install them first.")
     else:
