@@ -67,7 +67,7 @@ def main():
         station = SpaceStation(**invalid)
         print(f"[OK] Station {1}: {station.name} — aucune erreur détectée")
     except pydantic.ValidationError as errors:
-        print(f"{errors.errors()[0]['input']}: {errors.errors()[0]['msg']}")
+        print(f"{errors.errors()[0]['loc'][0]}: {errors.errors()[0]['msg']}")
 
 
 if __name__ == "__main__":
