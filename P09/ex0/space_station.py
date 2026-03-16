@@ -4,11 +4,11 @@ from typing import Optional
 
 
 class SpaceStation(pydantic.BaseModel):
-    station_id: str = pydantic.Field(min_length=3, max_length=10)  # 3-10 characters
+    station_id: str = pydantic.Field(min_length=3, max_length=10)
     name: str = pydantic.Field(min_length=1, max_length=50)
-    crew_size: int = pydantic.Field(ge=1, le=20)  # 1-20 people
-    power_level: float = pydantic.Field(ge=0.0, le=100.0)  # 0.0-100.0 percent
-    oxygen_level: float = pydantic.Field(ge=0.0, le=100.0)  # 0.0-100.0 percent
+    crew_size: int = pydantic.Field(ge=1, le=20)
+    power_level: float = pydantic.Field(ge=0.0, le=100.0)
+    oxygen_level: float = pydantic.Field(ge=0.0, le=100.0)
     last_maintenance: datetime
     is_operational: bool = True
     notes: Optional[str] = pydantic.Field(default=None, max_length=200)
