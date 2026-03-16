@@ -6,7 +6,7 @@ from enum import Enum
 
 class Rank(Enum):
     cadet = "cadet"
-    officier = "ofiicier"
+    officer = "officer"
     lieutenant = "lieutenant"
     captain = "captain"
     commander = "commander"
@@ -42,20 +42,26 @@ class SpaceMission(BaseModel):
         for member in self.crew:
             if member.rank == Rank.captain or Rank.commander:
                 return self
-        raise ValueError("Has not a valid crew")
+        raise ValueError("prout")
 
     @model_validator(mode='after')
     def custom_duration_validator(self):
-        for member in self.crew:
-            if member.years_experience > 5 and self.duration_days > 365:
+        veterant_member = 0
+        if self.duration_days > 365:
+            for member in self.crew:
+                if member.years_experience >= 5:
+                    veterant_member += 1
+            if veterant_member >= len(self.crew) / 2:
                 return self
-        raise ValueError("Has not a valid crew")
+            raise ValueError("pas prout")
+
+        return self
 
     def custom_member_active_validator(self):
         for member in self.crew:
             if member.is_active:
                 return self
-        raise ValueError("Has not a valid crew")
+        raise ValueError("mega prout")
 
 
 def main():

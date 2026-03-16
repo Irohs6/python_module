@@ -15,44 +15,59 @@ class SpaceStation(pydantic.BaseModel):
 
 
 def main():
-    import json
-    import os
 
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    VALID_DATA = {
+        "station_id": "LGW125",
+        "name": "Titan Mining Outpost",
+        "crew_size": 6,
+        "power_level": 76.4,
+        "oxygen_level": 95.5,
+        "last_maintenance": "2023-07-11T00:00:00",
+        "is_operational": True,
+        "notes": None,
+    }
 
     # --- Test avec les données valides ---
     print("=" * 50)
-    print("TEST DONNÉES VALIDES (space_stations.json)")
+    print("TEST DONNÉES VALIDES")
     print("=" * 50)
-    with open(os.path.join(base_dir, "space_stations.json"), "r") as f:
-        valid_data = json.load(f)
 
-    for i, data in enumerate(valid_data):
-        try:
-            station = SpaceStation(**data)
-            print(f"[OK] Station {i+1}: {station.name} ({station.station_id})")
-        except pydantic.ValidationError as e:
-            print(f"[KO] Station {i+1}: {data.get('name', '?')}")
-            for err in e.errors():
-                print(f"     -> {err['loc'][0]}: {err['msg']}")
+    try:
+        station = SpaceStation(**VALID_DATA)
+        print("Valid station created:")
+        print(f"ID: {station.station_id}")
+        print(f"Name: {station.name}")
+        print(f"Crew: {station.crew_size} people")
+        print(f"Power: {station.power_level}%")
+        print(
+            f"Status: "
+            f"{'Operational' if station.is_operational else 'Not operational'}"
+        )
+    except pydantic.ValidationError as e:
+        print(f"[KO] Station : {VALID_DATA.get('name', '?')}")
+        for err in e.errors():
+            print(f"     -> {err['loc'][0]}: {err['msg']}")
 
     # --- Test avec les données invalides ---
     print("\n" + "=" * 50)
-    print("TEST DONNÉES INVALIDES (invalid_stations.json)")
+    print("TEST DONNÉES INVALIDES")
     print("=" * 50)
-    with open(os.path.join(base_dir, "invalid_stations.json"), "r") as f:
-        invalid_data = json.load(f)
 
-    for i, data in enumerate(invalid_data):
-        try:
-            station = SpaceStation(**data)
-            print(f"[OK] Station {i+1}: {station.name} — aucune erreur détectée")
-        except pydantic.ValidationError as e:
-            print(
-                f"[KO] Station {i+1}: {data.get('name', '?')} — {e.error_count()} erreur(s)"
-            )
-            for err in e.errors():
-                print(f"     -> {err['loc'][0]}: {err['msg']}")
+    invalid = {
+        "station_id": "TOOLONG123456",
+        "name": "Test Station",
+        "crew_size": 25,
+        "power_level": 85.0,
+        "oxygen_level": 92.0,
+        "last_maintenance": "2024-01-15T10:30:00",
+        "is_operational": True,
+    }
+
+    try:
+        station = SpaceStation(**invalid)
+        print(f"[OK] Station {1}: {station.name} — aucune erreur détectée")
+    except pydantic.ValidationError as errors:
+        print(f"{errors.errors()[0]['input']}: {errors.errors()[0]['msg']}")
 
 
 if __name__ == "__main__":
