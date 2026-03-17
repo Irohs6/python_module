@@ -1,4 +1,10 @@
-from pydantic import BaseModel, Field, ValidationError, model_validator
+try:
+    from pydantic import BaseModel, Field, ValidationError, model_validator
+except ImportError:
+    print("Pydantic library is not installed. Please install it using 'pip "
+          "install pydantic' and try again.")
+    exit(1)
+
 from datetime import datetime
 from typing import Optional
 from enum import Enum
@@ -11,7 +17,7 @@ class ContactType(str, Enum):
     telepathic = "telepathic"
 
 
-class AlienContactModel(BaseModel):
+class AlienContact(BaseModel):
     contact_id: str = Field(min_length=5, max_length=15)
     timestamp: datetime
     location: str = Field(min_length=3, max_length=100)
@@ -26,7 +32,7 @@ class AlienContactModel(BaseModel):
     def custom_contact_validation(self):
         if self.contact_id.startswith("AC"):
             return self
-        raise ValueError(f"{self.contact_id} must start with 'AC'")
+        raise ValueError("contact_id must start with 'AC'")
 
     @model_validator(mode="after")
     def custom_contact_type_validation(self):
@@ -51,47 +57,96 @@ class AlienContactModel(BaseModel):
 
 
 def main():
-    import json
-    import os
-
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # --- Test avec les données valides ---
     print("=" * 50)
-    print("TEST DONNÉES VALIDES (alien_contacts.json)")
+    print("Alien Contact Log Validation")
     print("=" * 50)
-    with open(os.path.join(base_dir, "alien_contacts.json"), "r") as f:
-        valid_data = json.load(f)
 
-    for i, data in enumerate(valid_data):
+    VALID_DATA = [
+            {
+                "contact_id": "AC_2024_001",
+                "timestamp": "2024-01-20T00:00:00",
+                "location": "Atacama Desert, Chile",
+                "contact_type": "visual",
+                "signal_strength": 9.6,
+                "duration_minutes": 99,
+                "witness_count": 11,
+                "message_received": "Greetings from Zeta Reticuli",
+                "is_verified": False
+            },
+            {
+                "contact_id": "AC_2024_002",
+                "timestamp": "2024-08-20T00:00:00",
+                "location": "Mauna Kea Observatory, Hawaii",
+                "contact_type": "radio",
+                "signal_strength": 5.6,
+                "duration_minutes": 152,
+                "witness_count": 6,
+                "message_received": None,
+                "is_verified": True
+            },
+        ]
+
+    print("Valid contact report:")
+
+    for i, data in enumerate(VALID_DATA):
         try:
-            alien = AlienContactModel(**data)
-            print(f"[OK] alien {i+1}:({alien.contact_id})")
-        except ValidationError as e:
-            print(f"[KO] alien {i+1}: {data.get('contatc_id', '?')}")
-            for err in e.errors():
-                print(f"     -> {err}")
+            alien = AlienContact(**data)
+            print(f"Alien {i+1} ID:({alien.contact_id})")
+            print(f"Type: {alien.contact_type.value}")
+            print(f"Location: {alien.location}")
+            print(f"Signal Strength: {alien.signal_strength}")
+            print(f"Duration: {alien.duration_minutes} minutes")
+            print(f"Witness Count: {alien.witness_count}")
+            print(f"Message Received: {alien.message_received}\n")
+        except ValidationError as errors:
+            for error in errors.errors():
+                print(f"[KO] alien {i+1}: {error['loc'][0]}: {error['msg']}")
+            print()
 
-    # --- Test avec les données invalides ---
+    INVALID_VALID_DATA = [
+            {
+                "contact_id": "_2024_001",
+                "timestamp": "2024-01-20T00:00:00",
+                "location": "Atacama Desert, Chile",
+                "contact_type": "visual",
+                "signal_strength": 9.6,
+                "duration_minutes": 0,
+                "witness_count": 11,
+                "message_received": "Greetings from Zeta Reticuli",
+                "is_verified": False
+            },
+            {
+                "contact_id": "AC_2024_002",
+                "timestamp": "2024-08-20T00:00:00",
+                "location": "Ma",
+                "contact_type": "",
+                "signal_strength": 5.6,
+                "duration_minutes": 152,
+                "witness_count": 0,
+                "message_received": None,
+                "is_verified": True
+            },
+        ]
+
     print("\n" + "=" * 50)
-    print("TEST DONNÉES INVALIDES (invalid_contacts.json)")
+    print("Invalid contact reports:")
     print("=" * 50)
-    with open(os.path.join(base_dir, "invalid_contacts.json"), "r") as f:
-        invalid_data = json.load(f)
 
-    for i, data in enumerate(invalid_data):
+    for i, data in enumerate(INVALID_VALID_DATA):
         try:
-            alien = AlienContactModel(**data)
-            print(
-                f"[OK] alien {i+1}: {alien.contact_id} — aucune erreur détectée"
-            )
-        except ValidationError as e:
-            print(
-                f"[KO] alien {i+1}: {data.get('contact_id', '?')} — {e.error_count()} erreur(s)"
-            )
-            for err in e.errors():
-                loc = err["loc"][0] if err["loc"] else "model"
-                print(f"     -> {loc}: {err['msg']}")
+            alien = AlienContact(**data)
+            print(f"ID{i}:({alien.contact_id})")
+            print(f"Type: {alien.contact_type.value}")
+            print(f"Location: {alien.location}")
+            print(f"Signal Strength: {alien.signal_strength}")
+            print(f"Duration: {alien.duration_minutes} minutes")
+            print(f"Witness Count: {alien.witness_count}")
+            print(f"Message Received: {alien.message_received}\n")
+        except ValidationError as errors:
+            for error in errors.errors():
+                field = error['loc'][0] if error['loc'] else ""
+                print(f"[KO] alien {i+1}: {field}: {error['msg']}")
+            print()
 
 
 if __name__ == "__main__":
