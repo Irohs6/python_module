@@ -10,12 +10,16 @@ def spell_reducer(spells: list[int], operation: str) -> int:
         return reduce(ope, spells)
 
 
-def base_enchantement():
+def enchantement():
     pass
 
 
 def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
-    pass
+    return{
+        'fire_enchant': (base_enchantment, 'fire', 50),
+        'ice_enchant': (base_enchantment, 'ice', 50),
+        'lightning_enchant': (base_enchantment, 'lightning', 50)
+    }
 
 
 @lru_cache(maxsize=None)
@@ -37,9 +41,11 @@ fibo.call_info = lambda: (
     f"CacheInfo(hits=0, misses={fibo._calls}, maxsize=None, currsize=0)"
 )
 
+
 @singledispatch
 def spell_dispatcher() -> callable:
     return lambda x: f"Default spell cast on {x}"
+
 
 @spell_dispatcher.register
 def _(target: str) -> str:
