@@ -1,14 +1,12 @@
 
-from numpy import average
-
-
 def artifact_sorter(artifact: list[dict]) -> list[dict]:
     return sorted(artifact, key=lambda artifact: artifact.get('power', 0),
                   reverse=True)
 
 
 def power_filter(mages: list[dict], min_power: int) -> list[dict]:
-    return list(filter(lambda mages: mages.get('power', 0) >= min_power, mages))
+    return list(filter(lambda mages: mages.get('power', 0) >= min_power, mages)
+                )
 
 
 def spell_transformer(spells: list[str]) -> list[str]:
@@ -25,7 +23,6 @@ def mage_stats(mages: list[dict]) -> dict:
         'average': round(power_total / len_total, 2)
     }
     return stats
-
 
 
 def main():

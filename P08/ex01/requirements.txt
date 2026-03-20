@@ -1,2 +1,4 @@
-# requirements.txt - Dépendances pip pour ex01
-# À compléter
+pandas >= 2.1.0
+numpy >= 1.24.0
+matplotlib >= 3.7.2
+requests >= 2.31.0

@@ -48,7 +48,7 @@ def conditional_caster(condition: Callable, spell: Callable) -> Callable:
 def spell_sequence(spells: list[Callable]) -> Callable:
     if not all(callable(spell) for spell in spells):
         raise TypeError("All elements in spells must be callable")
-    
+
     def sequence(target: str) -> list:
         if isinstance(target, str):
             return [spell(target) for spell in spells]
