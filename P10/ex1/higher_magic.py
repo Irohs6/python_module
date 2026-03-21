@@ -1,59 +1,32 @@
-from typing import Any, Callable
+from typing import Callable
 
 
 def spell_combiner(spell1: Callable, spell2: Callable) -> Callable:
-    if callable(spell1) and callable(spell2):
-        def combined(target: str) -> tuple:
-            if isinstance(target, str):
-                return spell1(target), spell2(target)
-    else:
-        raise TypeError("Both arguments must be callable")
+    def combined(*args, **kwargs) -> tuple:
+        return spell1(*args, **kwargs), spell2(*args, **kwargs)
 
     return combined
 
 
 def power_amplifier(base_spell: Callable, multiplier: int) -> Callable:
-    if not callable(base_spell):
-        raise TypeError("Base spell must be callable")
-    if not isinstance(multiplier, int):
-        raise TypeError("Multiplier must be an integer")
-
-    def amplified(target: str) -> Any:
-        if isinstance(target, str):
-            return base_spell(target) * multiplier
-        else:
-            raise TypeError("Target must be a string")
+    def amplified(*args, **kwargs):
+        return base_spell(*args, **kwargs) * multiplier
 
     return amplified
 
 
 def conditional_caster(condition: Callable, spell: Callable) -> Callable:
-    if not callable(condition):
-        raise TypeError("Condition must be callable")
-    if not callable(spell):
-        raise TypeError("Spell must be callable")
-
-    def caster(target: str) -> Any:
-        if isinstance(target, str):
-            if condition(target):
-                return spell(target)
-            else:
-                return "Spell fizzled"
-        else:
-            raise TypeError("Target must be a string")
+    def caster(*args, **kwargs):
+        if condition(*args, **kwargs):
+            return spell(*args, **kwargs)
+        return "Spell fizzled"
 
     return caster
 
 
 def spell_sequence(spells: list[Callable]) -> Callable:
-    if not all(callable(spell) for spell in spells):
-        raise TypeError("All elements in spells must be callable")
-
-    def sequence(target: str) -> list:
-        if isinstance(target, str):
-            return [spell(target) for spell in spells]
-        else:
-            raise TypeError("Target must be a string")
+    def sequence(*args, **kwargs) -> list:
+        return [spell(*args, **kwargs) for spell in spells]
 
     return sequence
 

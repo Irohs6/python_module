@@ -35,14 +35,12 @@ def memory_vault() -> dict[str, callable]:
     vault: dict[Any, Any] = {}
 
     def store(key: Any, value: Any):
-        if key not in vault.keys():
-            vault[key] = value
-        else:
-            raise KeyError
+        vault[key] = value
 
-        def recall(key: Any):
-            vault.get(key, None)
-            return {
-                'store': store,
-                'recall': recall
-            }
+    def recall(key: Any):
+        return vault.get(key, "Memory not found")
+
+    return {
+        'store': store,
+        'recall': recall
+    }
