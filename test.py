@@ -1,2 +1,2 @@
 if __name__ == "__main__":
-    print(int('0x1526', base=16))
+    print(int('af123', base=0))
