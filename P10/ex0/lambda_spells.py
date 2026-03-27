@@ -14,15 +14,12 @@ def spell_transformer(spells: list[str]) -> list[str]:
 
 
 def mage_stats(mages: list[dict]) -> dict:
-    powers = [mage.get('power', 0) for mage in mages]
-    power_total = sum(powers)
-    len_total = len(powers)
-    stats = {
-        'max_power': (lambda power: max(power) if power else 0)(powers),
-        'min_power': (lambda power: min(power) if power else 0)(powers),
-        'avg_power': round(power_total / len_total, 2)
-    }
-    return stats
+    powers = {
+              'max_power': max(mages, key=lambda m: m['power'])['power'],
+              'min_power': min(mages, key=lambda m: m['power'])['power'],
+              'avg_power': round(sum(map(lambda m: m['power'], mages)) / len(mages), 2)
+              }
+    return powers
 
 
 def main():
@@ -42,14 +39,25 @@ def main():
     ]
     spells = ["meteor", "tsunami", "lightning", "fireball"]
 
-    print(artifact_sorter(artifacts))
+    print("Testing artifact sorter...")
+    sorted_artifacts = artifact_sorter(artifacts)
+    for i in range(len(sorted_artifacts) - 1):
+        print(f"{sorted_artifacts[i]['name']} ({sorted_artifacts[i]['power']} power) comes before {sorted_artifacts[i+1]['name']} ({sorted_artifacts[i+1]['power']} power)")
     print()
-    print(power_filter(mages, 85))
+
+    print("Testing power filter (min 85)...")
+    filtered = power_filter(mages, 85)
+    for mage in filtered:
+        print(f"{mage['name']} qualifies with {mage['power']} power")
     print()
-    print(spell_transformer(spells))
+
+    print("Testing spell transformer...")
+    print(' '.join(spell_transformer(spells)))
     print()
-    print(mage_stats(mages))
-    print(mage_stats.__getattribute__)
+
+    print("Testing mage stats...")
+    stats = mage_stats(mages)
+    print(f"Max power: {stats['max_power']}, Min power: {stats['min_power']}, Avg power: {stats['avg_power']}")
 
 
 if __name__ == "__main__":

@@ -44,3 +44,27 @@ def memory_vault() -> dict[str, callable]:
         'store': store,
         'recall': recall
     }
+
+
+def main():
+    print("Testing mage counter...")
+    counter = mage_counter()
+    for i in range(3):
+        print(f"Call {i}: {counter()}")
+
+    print("\nTesting sepll acumulator...")
+    accumulator = spell_accumulator(10)
+    print(accumulator(1))
+    print(accumulator(1), '\n')
+
+    print("Testing enchantment factory...")
+    enchantment = enchantment_factory('fire')
+    print(enchantment("sword"), '\n')
+
+    print("Testing memory vault...")
+    memory = memory_vault()
+    print(memory['store']('lapin', 5), memory['recall']('lapin'))
+
+
+if __name__ == "__main__":
+    main()

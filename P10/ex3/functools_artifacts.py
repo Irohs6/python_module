@@ -16,10 +16,6 @@ def spell_reducer(spells: list[int], operation: str) -> int:
     return reduce(operations[operation], spells)
 
 
-def enchantement():
-    pass
-
-
 def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
     return {
         "fire_enchant": partial(base_enchantment, 50, "fire"),
@@ -28,18 +24,18 @@ def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
     }
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=1000)
 def memoized_fibonacci(n: int) -> int:
     if n < 2:
         return n
     return memoized_fibonacci(n - 1) + memoized_fibonacci(n - 2)
 
 
-def fibo(n: int, i: int) -> int:
+def fibo(n: int) -> int:
     fibo._calls += 1
     if n < 2:
         return n
-    return fibo(n - 1, i + 1) + fibo(n - 2, i + 1)
+    return fibo(n - 1) + fibo(n - 2)
 
 
 fibo._calls = 0
@@ -69,9 +65,12 @@ def spell_dispatcher() -> callable:
 
 
 if __name__ == "__main__":
+    print("Testing spell reducer...")
+    print(f"Sum: {spell_reducer([10, 12, 5, 6], 'add')}")
+    print(f"Product: {spell_reducer([10, 12, 5, 6], 'multiply')}")
+    print(f"Max: {spell_reducer([10, 12, 5, 6], 'max')}\n")
+
     print([memoized_fibonacci(n) for n in range(8)])
-
-    print(memoized_fibonacci.cache_info())
-
-    print([fibo(n, n) for n in range(8)])
-    print(fibo.call_info())
+    print(f"Fib(8){memoized_fibonacci.cache_info()}")
+    fibo(8)
+    print(f"Original Fibo{fibo.call_info()}")
