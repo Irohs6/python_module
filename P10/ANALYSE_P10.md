@@ -1,48 +1,45 @@
-# Analyse P10 — État actuel par exercice (mise à jour 27/03/2026 — v2)
+# Analyse P10 — État actuel par exercice (mise à jour 27/03/2026 — v3)
 
 ---
 
-## Ex0 — `lambda_spells.py` ✅ Fonctionnel
+## Ex0 — `lambda_spells.py` ✅ Correct
 
 ### Sortie réelle
 ```
 Testing artifact sorter...
-[{'name': 'Shadow Blade', 'power': 111, ...}, ...]
-
-Testing filter
-[{'name': 'Morgan', 'power': 92, ...}, ...]
-
-Testing spell transformer
-['* meteor *', '* tsunami *', '* lightning *', '* fireball *']
-
-Testing mage stats
-{'max_power': 97, 'min_power': 65, 'avg_power': 85.8}
-```
-
-### Problèmes restants
-
-**`main()` : affichage brut des listes, pas le format narratif du sujet**
-Le sujet attend un affichage lisible comme :
-```
 Shadow Blade (111 power) comes before Storm Crown (87 power)
+Storm Crown (87 power) comes before Shadow Blade (74 power)
+Shadow Blade (74 power) comes before Ice Wand (61 power)
+
+Testing power filter (min 85)...
+Morgan qualifies with 92 power
+Kai qualifies with 97 power
+Jordan qualifies with 91 power
+
+Testing spell transformer...
+* meteor * * tsunami * * lightning * * fireball *
+
+Testing mage stats...
+Max power: 97, Min power: 65, Avg power: 85.8
 ```
-Actuellement `print(artifact_sorter(artifacts))` affiche la liste brute. Pas bloquant si l'évaluateur accepte les prints bruts.
 
 ### Ce qui est correct ✓
 - `artifact_sorter` : `sorted()` + `lambda key` ✓
 - `power_filter` : `filter()` + `lambda` ✓
 - `spell_transformer` : `map()` + `lambda`, format `* spell *` ✓
 - `mage_stats` : `max(..., key=lambda)`, `min(..., key=lambda)`, `sum(map(lambda ...))` ✓
-- `main()` présent avec données de test ✓
+- `main()` : affichage formaté et narratif ✓
+
+### Aucun problème bloquant ✓
 
 ---
 
-## Ex1 — `higher_magic.py` ✅ Fonctionnel
+## Ex1 — `higher_magic.py` ✅ Correct
 
 ### Sortie réelle
 ```
 Testing spell combiner...
-Combined spell result ('Fireball hits Dragon!', 'Heal Dragon!')
+Combined spell result: Fireball hits Dragon!, Heal Dragon!
 
 Testing power amplifier...
 Original: 10, Amplified: 30
@@ -52,19 +49,18 @@ Fireball hits Goblin!
 Spell fizzled
 
 Testing spell sequence...
-['Fireball hits Dragon!', 'Heal Dragon!']
+Fireball hits Dragon!
+Heal Dragon!
 ```
 
-### Problèmes restants
-
-**Aucun problème fonctionnel majeur.** Le format d'affichage est légèrement différent du sujet (ex: `Combined spell result (...)` au lieu de `Combined spell result: ...`) mais pas bloquant.
-
 ### Ce qui est correct ✓
-- `spell_combiner` : retourne un tuple des deux résultats ✓
-- `power_amplifier` : `base_spell * multiplier`, `power_spell` retourne bien un `int` ✓
+- `spell_combiner` : retourne un tuple dépaquetté à l'affichage ✓
+- `power_amplifier` : `base_spell * multiplier`, `power_spell` retourne un `int` ✓
 - `conditional_caster` : retourne `"Spell fizzled"` si condition False ✓
-- `spell_sequence` : retourne une liste de résultats ✓
-- `main()` complet avec tous les cas de test ✓
+- `spell_sequence` : résultats affichés ligne par ligne ✓
+- `main()` complet avec tous les cas de test, affichage formaté ✓
+
+### Aucun problème bloquant ✓
 
 ---
 
@@ -92,26 +88,26 @@ None 5
 
 **1. Compteur commence à `Call 0:` au lieu de `Call 1:`**
 ```python
+# ACTUEL :
 for i in range(3):
-    print(f"Call {i}: {counter()}")   # i part de 0
+    print(f"Call {i}: {counter()}")   # i part de 0 → "Call 0: 1"
 
 # ATTENDU :
 for i in range(1, 4):
-    print(f"Call {i}: {counter()}")   # i part de 1
+    print(f"Call {i}: {counter()}")   # i part de 1 → "Call 1: 1"
 ```
 
 **2. Typo : `"Testing sepll acumulator..."` → `"Testing spell accumulator..."`**
 
 **3. `memory['store']` retourne `None`**
-`store()` ne retourne rien → `print(memory['store']('lapin', 5), ...)` affiche `None 5`.
-À corriger : soit ne pas printer le retour de `store`, soit `return value` dans `store`.
+`store()` ne retourne rien → `print(memory['store']('lapin', 5), memory['recall']('lapin'))` affiche `None 5`.
+Fix : appeler `store` et `recall` séparément, ne pas printer le retour de `store`.
 
 ### Ce qui est correct ✓
 - `mage_counter` : `nonlocal`, un seul compteur créé hors de la boucle ✓
-- `spell_accumulator` : `nonlocal initial_power`, accumule correctement ✓
+- `spell_accumulator` : `nonlocal initial_power`, accumule correctement (10→11→12) ✓
 - `enchantment_factory` : format `"type item"` via `chr(32)` ✓
 - `memory_vault` : retourne dict `{store, recall}`, `"Memory not found"` si absent ✓
-- `main()` présent et fonctionnel ✓
 
 ---
 
@@ -132,7 +128,7 @@ Original FiboCacheInfo(hits=0, misses=67, maxsize=None, currsize=0)
 ### Problèmes restants
 
 **1. `__main__` ne teste pas `partial_enchanter` ni `spell_dispatcher`**
-Il manque les sections :
+À ajouter :
 ```python
 print("Testing partial enchanter...")
 enchanter = partial_enchanter(some_base_enchantment)
@@ -145,27 +141,28 @@ print(cast(42))
 print(cast([1, "shield"]))
 ```
 
-**2. `memoized_fibonacci` utilise `maxsize=1000` au lieu de `maxsize=None`**
-`@lru_cache(maxsize=None)` = cache illimité, plus idiomatique pour Fibonacci.
-
-**3. Affichage `Fib(8)CacheInfo(...)` collé (pas d'espace/newline)**
+**2. Affichage collé sans séparateur**
 ```python
-print(f"Fib(8){memoized_fibonacci.cache_info()}")   # ← collé
+print(f"Fib(8){memoized_fibonacci.cache_info()}")    # → "Fib(8)CacheInfo(...)"
+print(f"Original Fibo{fibo.call_info()}")             # → "Original FiboCacheInfo(...)"
 # ATTENDU :
 print(f"Fib(8): {memoized_fibonacci.cache_info()}")
+print(f"Original Fibo: {fibo.call_info()}")
 ```
 
+**3. `memoized_fibonacci` utilise `maxsize=1000` au lieu de `maxsize=None`**
+`@lru_cache(maxsize=None)` est plus idiomatique pour Fibonacci (cache illimité).
+
 ### Note : `fibo()` est intentionnel ✓
-`fibo()` sans `@lru_cache` et son `call_info` sont là pour le **comparatif avec/sans cache**.
-La sortie montre bien la différence : `hits=12, misses=8` (avec cache) vs `hits=0, misses=67` (sans cache). C'est voulu.
+`fibo()` sans `@lru_cache` est là pour le **comparatif avec/sans cache**.
+La sortie montre la différence : `hits=12, misses=8` (avec) vs `hits=0, misses=67` (sans). C'est voulu.
 
 ### Ce qui est correct ✓
 - `spell_reducer` : `reduce` + `operator` pour les 4 opérations, gestion d'erreurs ✓
-- `partial_enchanter` : `functools.partial` avec `power=50` et les 3 éléments ✓
+- `partial_enchanter` : `functools.partial` avec `50` et les 3 éléments ✓
 - `memoized_fibonacci` : `@lru_cache` ✓
-- `fibo` : version sans cache pour la comparaison ✓
+- `fibo` : version sans cache pour comparaison ✓
 - `spell_dispatcher` : `@singledispatch` avec cas `int`, `str`, `list` ✓
-- `__main__` teste `spell_reducer` et Fibonacci ✓
 
 ---
 
@@ -180,69 +177,48 @@ False
 False
 False
 False
-Spell failed, retrying... (attempt 1/3)
-Spell failed, retrying... (attempt 2/3)
-Spell failed, retrying... (attempt 3/3)
+Spell failed, retrying...
+(attempt 1/3)
+Spell failed, retrying...
+(attempt 2/3)
+Spell failed, retrying...
+(attempt 3/3)
 ```
 
 ### Problèmes restants
 
 **1. `validate_mage_name` appelée avec un `tuple` via `zip()`**
 ```python
-for name in zip(mage_names, invalid_names):   # zip → produit des tuples ("Alex", "Jo")
-    print(morgan.validate_mage_name(name))     # name = tuple → toujours False
+for name in zip(mage_names, invalid_names):    # → tuples ("Alex", "Jo")
+    print(morgan.validate_mage_name(name))     # isalpha() sur tuple → False systématique
 ```
-C'est pour ça que les 4 lignes affichent `False`. À corriger en itérant séparément :
-```python
-for name in mage_names:
-    print(morgan.validate_mage_name(name))
-for name in invalid_names:
-    print(morgan.validate_mage_name(name))
-```
+Fix : itérer séparément sur chaque liste.
 
 **2. `power_validator` utilise `<=` au lieu de `<`**
 ```python
-if power_value <= min_power:   # bloque power == min_power → ex: power=10 avec @power_validator(10)
-
+if power_value <= min_power:   # power=10 avec @power_validator(10) → "Insufficient power" à tort
 # ATTENDU :
 if power_value < min_power:
 ```
-Avec `power=15` ça marche, mais `power=10` retournerait `"Insufficient power"` à tort.
 
-**3. `spell_timer` contient une vérification `kwargs` qui lui appartient pas**
+**3. `spell_timer` contient une validation `kwargs` hors de son rôle**
 ```python
 def wrapper(*args, **kwargs):
-    if not kwargs:                        # ← logique de validation, pas du timer
+    if not kwargs:               # ← logique de validation, pas de timing
         raise SyntaxError("...")
 ```
-Si `spell_timer` est utilisé seul (sans `power_validator`), il rejette tout appel sans kwargs. Cette logique appartient uniquement à `power_validator`.
+Si `spell_timer` est utilisé seul sans `power_validator`, il refuse tout appel sans kwargs.
+
+**4. Message de `retry_spell` affiché sur deux lignes**
+```python
+print(f"Spell failed, retrying... \n(attempt {attempt}/{max_attempts})")
+# ← \n parasite, le message devrait tenir sur une ligne
+```
 
 ### Ce qui est correct ✓
 - `spell_timer` : `@wraps`, mesure et affiche le temps ✓
-- `power_validator` : structure decorator-factory, `*args` pour passer `self` ✓
-- `retry_spell` : boucle `max_attempts`, messages corrects, retour final correct ✓
+- `power_validator` : decorator-factory, `*args` pour passer `self` ✓
+- `retry_spell` : boucle `max_attempts`, retour final correct ✓
 - `cast_spell(spell_name=..., power=...)` : appel correct ✓
 - `@power_validator(10)` + `@spell_timer` stackés sur `cast_spell` ✓
-- `validate_mage_name` : `@staticmethod`, accepte lettres + espaces ✓
-
----
-
-## Résumé global
-
-| Exercice | Problèmes critiques | Problèmes mineurs |
-|---|---|---|
-| **ex0** | `mage_stats` ne respecte pas l'exigence lambda | `print(__getattribute__)` parasite, format `main()` incorrect |
-| **ex1** | Format `main()` incorrect | `power_amplifier` testé avec str au lieu d'int |
-| **ex2** | **Pas de `main()` → aucune sortie à l'exécution** | `store` ne retourne rien |
-| **ex3** | Fonction `enchantement()` vide, `fibo()` hors-sujet, format `__main__` incorrect | `partial_enchanter` dépend de la signature de `base_enchantment` |
-| **ex4** | **BUG `<=` au lieu de `<`**, retour `cast_spell` incorrect, `validate_mage_name` rejette les espaces | Format `main()` incomplet, code hors-sujet |
-
-### Actions prioritaires avant soutenance
-
-1. **ex4** — Corriger `<=` → `<` dans `power_validator`
-2. **ex4** — Corriger le `return` de `cast_spell` : `f"Successfully cast {spell_name} with {power} power"`
-3. **ex4** — Corriger `validate_mage_name` pour accepter les espaces
-4. **ex2** — Ajouter un `main()` avec la sortie attendue
-5. **ex0** — Corriger `mage_stats` pour utiliser `lambda` avec `max()`/`min()`/`sum()`
-6. **ex3** — Supprimer `enchantement()` et `fibo()`
-7. **ex0/ex1/ex3** — Corriger les `main()` pour correspondre au format du sujet
+- `validate_mage_name` : `@staticmethod`, logique lettres + espaces correcte ✓

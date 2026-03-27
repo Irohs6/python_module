@@ -39,14 +39,14 @@ def heal(target: str) -> str:
     return f"Heal {target}!"
 
 
-def power_spell(power: int)-> int:
-    return (power)
+def power_spell(power: int) -> int:
+    return power
 
 
 def main():
     print("Testing spell combiner...")
     combined_spell = spell_combiner(fireball, heal)
-    result1, result2 = combined_spell('Dragon')
+    result1, result2 = combined_spell("Dragon")
     print(f"Combined spell result: {result1}, {result2}\n")
 
     print("Testing power amplifier...")
@@ -59,7 +59,7 @@ def main():
     print("Testing conditional spell...")
     conditional_spell = conditional_caster(is_enemy, fireball)
     print(conditional_spell("Goblin"))
-    print(conditional_spell("Villager"), '\n')
+    print(conditional_spell("Villager"), "\n")
 
     print("Testing spell sequence...")
     sequence_spell = spell_sequence([fireball, heal])

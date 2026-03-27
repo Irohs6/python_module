@@ -13,6 +13,7 @@ def spell_timer(func: callable) -> callable:
         end = time()
         print(f"Spell completed in {end - start:.4f} seconds")
         return result
+
     return wrapper
 
 
@@ -42,9 +43,14 @@ def retry_spell(max_attempts: int) -> callable:
                 try:
                     return spell(*args, **kwargs)
                 except Exception:
-                    print(f"Spell failed, retrying... (attempt {attempt}/{max_attempts})")
+                    print(
+                        f"Spell failed, retrying... \n"
+                        f"(attempt {attempt}/{max_attempts})"
+                    )
             return f"Spell casting failed after {max_attempts} attempts"
+
         return cast_spel
+
     return decorator
 
 
