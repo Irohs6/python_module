@@ -76,25 +76,27 @@ def risky_spell():
 
 if __name__ == "__main__":
 
-    mages = [
-        {"name": "Casey", "power": 99, "element": "earth"},
-        {"name": "Morgan", "power": 92, "element": "water"},
-        {"name": "Morgan", "power": 80, "element": "lightning"},
-        {"name": "Phoenix", "power": 90, "element": "lightning"},
-        {"name": "Alex", "power": 61, "element": "wind"},
-    ]
-
-    # Master's Tower Test Data
-    test_powers = [18, 9, 27, 27]
-    spell_names = ["tornado", "blizzard", "earthquake", "heal"]
-    mage_names = ["Alex", "Sage", "Luna", "Morgan", "Phoenix", "Kai"]
-    invalid_names = ["Jo", "A", "Alex123", "Test@Name"]
+    print("="*40)
+    print("Demonstration: Decorators & MageGuild")
+    print("="*40)
 
     morgan = MageGuild()
-    try:
-        print(morgan.cast_spell(spell_name="tornado", power=15))
-    except SyntaxError as error:
-        print(error)
-    for name in zip(mage_names, invalid_names):
-        print(morgan.validate_mage_name(name))
-    risky_spell()
+
+    print("\n--- Test: spell_timer & power_validator (cast_spell) ---")
+    print("Valid cast:")
+    print(morgan.cast_spell(spell_name="tornado", power=15))
+    print("\nInvalid cast (power trop faible):")
+    print(morgan.cast_spell(spell_name="blizzard", power=5))
+
+    print("\n--- Test: validate_mage_name (staticmethod) ---")
+    valid_names = ["Alex", "Sage", "Luna", "Morgan", "Phoenix", "Kai"]
+    invalid_names = ["Jo", "A", "Alex123", "Test@Name"]
+    print("Valid names:")
+    for name in valid_names:
+        print(f"{name}: {morgan.validate_mage_name(name)}")
+    print("Invalid names:")
+    for name in invalid_names:
+        print(f"{name}: {morgan.validate_mage_name(name)}")
+
+    print("\n--- Test: retry_spell (risky_spell) ---")
+    print(risky_spell())

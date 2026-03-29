@@ -70,7 +70,23 @@ if __name__ == "__main__":
     print(f"Product: {spell_reducer([10, 12, 5, 6], 'multiply')}")
     print(f"Max: {spell_reducer([10, 12, 5, 6], 'max')}\n")
 
+    print("Testing partial enchanter...")
+    def base_enchantment(power, element, target):
+        return f"{element.title()} enchantment of {power} applied to {target}"
+
+    enchants = partial_enchanter(base_enchantment)
+    print(enchants["fire_enchant"]("sword"))
+    print(enchants["ice_enchant"]("shield"))
+    print(enchants["lightning_enchant"]("staff"))
+
+    print("\nTesting memoized fibonacci...")
     print([memoized_fibonacci(n) for n in range(8)])
-    print(f"Fib(8){memoized_fibonacci.cache_info()}")
+    print(f"Fib(8): {memoized_fibonacci.cache_info()}")
     fibo(8)
-    print(f"Original Fibo{fibo.call_info()}")
+    print(f"Original Fibo: {fibo.call_info()}")
+
+    print("\nTesting spell dispatcher...")
+    dispatcher = spell_dispatcher()
+    print(dispatcher(42))
+    print(dispatcher("amulet"))
+    print(dispatcher(["amulet", 7, "ring"]))
